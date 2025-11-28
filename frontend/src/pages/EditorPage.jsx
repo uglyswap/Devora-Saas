@@ -550,9 +550,10 @@ ${file.content}
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Chat Panel */}
-        <div className="w-80 border-r border-white/5 bg-black/20 flex flex-col">
+      <div className="flex-1 overflow-hidden">
+        <SplitPane split="vertical" minSize={250} maxSize={600} defaultSize={320}>
+          {/* Chat Panel */}
+          <div className="h-full border-r border-white/5 bg-black/20 flex flex-col">
           <div className="p-4 border-b border-white/5 flex-shrink-0">
             <h2 className="text-lg font-semibold flex items-center gap-2">
               <MessageSquare className="w-5 h-5 text-emerald-400" />
