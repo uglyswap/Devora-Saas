@@ -46,23 +46,41 @@ class StripeService:
             logger.error(f'Error creating Stripe customer: {str(e)}')
             raise
     
-    @staticmethod
     async def create_checkout_session(
+        self,
         customer_id: str,
         success_url: str,
         cancel_url: str,
-        user_id: str
+        user_id: str,
+        trial_days: int = 7
     ) -> dict:
         """Create a Stripe checkout session for subscription"""
+        await self._ensure_stripe_configured()
+        billing_settings = await self.config_service.get_billing_settings()
+        
         try:
+            # Créer dynamiquement le prix avec le montant de la config
+            price = stripe.Price.create(
+                unit_amount=int(billing_settings["price"] * 100),  # Convertir en centimes
+                currency="eur",
+                recurring={"interval": "month"},
+                product_data={
+                    "name": "Devora Pro",
+                    "description": "Accès complet à la plateforme Devora"
+                }
+            )
+            
             session = stripe.checkout.Session.create(
                 customer=customer_id,
                 payment_method_types=['card'],
                 line_items=[{
-                    'price': StripeService.PRICE_ID,
+                    'price': price.id,
                     'quantity': 1,
                 }],
                 mode='subscription',
+                subscription_data={
+                    'trial_period_days': trial_days
+                },
                 success_url=success_url + '?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url=cancel_url,
                 metadata={
