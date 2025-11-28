@@ -7,15 +7,21 @@ from stripe_service import StripeService
 from datetime import datetime, timezone
 import logging
 import json
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Load environment variables
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix='/billing', tags=['billing'])
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db = client[os.environ.get('DB_NAME', 'devora_projects_db')]
 
 @router.get('/plans', response_model=SubscriptionPlan)
 async def get_subscription_plans():
