@@ -1,25 +1,22 @@
 from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
-import os
-from models import AdminStats
+from models import AdminStats, SystemConfig, SystemConfigUpdate
 from auth import get_current_admin_user
+from config_service import ConfigService
 from datetime import datetime, timezone, timedelta
 import logging
-from dotenv import load_dotenv
-from pathlib import Path
-
-# Load environment variables
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+from config import settings
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix='/admin', tags=['admin'])
 
-# MongoDB connection
-mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ.get('DB_NAME', 'devora_projects_db')]
+# MongoDB connection with centralized config
+client = AsyncIOMotorClient(settings.MONGO_URL)
+db = client[settings.DB_NAME]
+
+# Initialize config service
+config_service = ConfigService(db)
 
 @router.get('/stats', response_model=AdminStats)
 async def get_admin_stats(current_admin: dict = Depends(get_current_admin_user)):
