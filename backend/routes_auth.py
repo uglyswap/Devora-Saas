@@ -122,3 +122,35 @@ async def get_current_user_info(current_user: dict = Depends(get_current_user)):
         user['current_period_end'] = datetime.fromisoformat(user['current_period_end'])
     
     return UserResponse(**user)
+
+@router.get('/export-data')
+async def export_user_data(current_user: dict = Depends(get_current_user)):
+    """Export all user data (RGPD)"""
+    user = await db.users.find_one({'id': current_user['user_id']}, {'_id': 0, 'hashed_password': 0})
+    projects = await db.projects.find({'user_id': current_user['user_id']}, {'_id': 0}).to_list(1000)
+    
+    export_data = {
+        'user': user,
+        'projects': projects,
+        'export_date': datetime.now(timezone.utc).isoformat()
+    }
+    
+    return export_data
+
+@router.delete('/delete-account')
+async def delete_user_account(current_user: dict = Depends(get_current_user)):
+    """Delete user account and all data (RGPD)"""
+    user_id = current_user['user_id']
+    
+    # Delete user's projects
+    await db.projects.delete_many({'user_id': user_id})
+    
+    # Delete user
+    result = await db.users.delete_one({'id': user_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail='User not found')
+    
+    logger.info(f'User account deleted: {current_user["email"]}')
+    
+    return {'message': 'Account deleted successfully'}
