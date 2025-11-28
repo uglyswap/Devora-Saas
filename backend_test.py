@@ -33,10 +33,14 @@ class DevoraAPITester:
             'details': details
         })
 
-    def run_test(self, name, method, endpoint, expected_status, data=None, params=None):
+    def run_test(self, name, method, endpoint, expected_status, data=None, params=None, token=None):
         """Run a single API test"""
         url = f"{self.api_url}/{endpoint}" if endpoint else f"{self.api_url}/"
         headers = {'Content-Type': 'application/json'}
+        
+        # Add authorization header if token provided
+        if token:
+            headers['Authorization'] = f'Bearer {token}'
 
         print(f"\n🔍 Testing {name}...")
         
