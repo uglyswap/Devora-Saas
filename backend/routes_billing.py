@@ -4,6 +4,7 @@ from models import SubscriptionPlan, Invoice
 from auth import get_current_user
 from stripe_service import StripeService
 from config_service import ConfigService
+from email_service import EmailService
 from datetime import datetime, timezone
 import logging
 import json
@@ -20,6 +21,7 @@ db = client[settings.DB_NAME]
 # Initialize services
 stripe_service = StripeService(db)
 config_service = ConfigService(db)
+email_service = EmailService(db)
 
 @router.get('/plans', response_model=SubscriptionPlan)
 async def get_subscription_plans():
