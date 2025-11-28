@@ -476,7 +476,8 @@ class DevoraAPITester:
 
 def main():
     tester = DevoraAPITester()
-    return tester.run_all_tests()
+    # Run the specific Devora SaaS user flow tests
+    return tester.run_devora_saas_tests()
 
 if __name__ == "__main__":
     sys.exit(main())
