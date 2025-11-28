@@ -57,9 +57,8 @@ async def get_current_admin_user(current_user: dict = Depends(get_current_user))
     """Verify current user is an admin"""
     # Check if user is admin (you'll need to add this to your user model)
     from motor.motor_asyncio import AsyncIOMotorClient
-    mongo_url = os.environ['MONGO_URL']
-    client = AsyncIOMotorClient(mongo_url)
-    db = client[os.environ['DB_NAME']]
+    client = AsyncIOMotorClient(settings.MONGO_URL)
+    db = client[settings.DB_NAME]
     
     user = await db.users.find_one({'id': current_user['user_id']}, {'_id': 0})
     if not user or not user.get('is_admin', False):
