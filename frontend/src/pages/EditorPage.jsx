@@ -22,7 +22,6 @@ import {
   DialogTrigger,
 } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
-import SplitPane from 'react-split-pane';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -551,15 +550,8 @@ ${file.content}
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        <SplitPane
-          split="vertical"
-          minSize={250}
-          maxSize={600}
-          defaultSize={320}
-          style={{ position: 'relative' }}
-        >
-          {/* Chat Panel */}
-          <div className="h-full border-r border-white/5 bg-black/20 flex flex-col">
+        {/* Chat Panel */}
+        <div className="w-80 border-r border-white/5 bg-black/20 flex flex-col">
           <div className="p-4 border-b border-white/5 flex-shrink-0">
             <h2 className="text-lg font-semibold flex items-center gap-2">
               <MessageSquare className="w-5 h-5 text-emerald-400" />
@@ -664,17 +656,10 @@ ${file.content}
               </Button>
             </div>
           </div>
-            </div>
-          </Panel>
+        </div>
 
-          <PanelResizeHandle className="w-1 bg-white/5 hover:bg-emerald-500/30 transition-colors cursor-col-resize" />
-
-          {/* Code Editor & Preview */}
-          <Panel defaultSize={80} minSize={40}>
-            <PanelGroup direction="horizontal">
-              {/* Editor Panel */}
-              <Panel defaultSize={50} minSize={30}>
-        <div className="h-full flex flex-col">
+        {/* Code Editor & Preview */}
+        <div className="flex-1 flex flex-col">
           {/* File Tabs */}
           <div className="border-b border-white/5 bg-black/20 flex items-center gap-2 px-4 py-2 overflow-x-auto flex-shrink-0">
             {project.files.map((file, idx) => (
@@ -716,7 +701,9 @@ ${file.content}
           </div>
 
           {/* Editor & Preview Split */}
-          <div className="flex-1 flex flex-col overflow-hidden border-r border-white/5">
+          <div className="flex-1 flex overflow-hidden">
+            {/* Code Editor */}
+            <div className="flex-1 flex flex-col border-r border-white/5">
               <div className="p-2 border-b border-white/5 bg-black/20 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <Code2 className="w-4 h-4 text-emerald-400" />
@@ -753,14 +740,10 @@ ${file.content}
                   }}
                 />
               </div>
-        </div>
-              </Panel>
+            </div>
 
-              <PanelResizeHandle className="w-1 bg-white/5 hover:bg-emerald-500/30 transition-colors cursor-col-resize" />
-
-              {/* Preview Panel */}
-              <Panel defaultSize={50} minSize={30}>
-            <div className="h-full flex flex-col bg-white">
+            {/* Preview */}
+            <div className="flex-1 flex flex-col bg-white">
               <div className="p-2 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <Eye className="w-4 h-4 text-blue-500" />
