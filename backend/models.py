@@ -71,3 +71,37 @@ class AdminStats(BaseModel):
     total_projects: int
     new_users_this_month: int
     churn_rate: float
+
+
+class SystemConfig(BaseModel):
+    """Configuration système stockée en DB (modifiable via admin panel)"""
+    model_config = ConfigDict(extra='ignore')
+    id: str = Field(default='system_config')  # ID fixe pour singleton
+    
+    # Stripe configuration
+    stripe_api_key: Optional[str] = None
+    stripe_webhook_secret: Optional[str] = None
+    stripe_test_mode: bool = True  # Mode test par défaut
+    
+    # Resend configuration
+    resend_api_key: Optional[str] = None
+    resend_from_email: str = 'noreply@devora.fun'
+    
+    # Billing settings
+    subscription_price: float = 9.90  # Prix TTC en EUR
+    free_trial_days: int = 7
+    max_failed_payments: int = 3  # Nombre d'échecs avant blocage
+    
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_by: Optional[str] = None  # User ID de l'admin qui a modifié
+
+class SystemConfigUpdate(BaseModel):
+    """Modèle pour mise à jour de la config système"""
+    stripe_api_key: Optional[str] = None
+    stripe_webhook_secret: Optional[str] = None
+    stripe_test_mode: Optional[bool] = None
+    resend_api_key: Optional[str] = None
+    resend_from_email: Optional[str] = None
+    subscription_price: Optional[float] = None
+    free_trial_days: Optional[int] = None
+    max_failed_payments: Optional[int] = None
