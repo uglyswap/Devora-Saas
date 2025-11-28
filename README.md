@@ -193,15 +193,15 @@ sudo supervisorctl restart frontend
 sudo supervisorctl status
 ```
 
-## 🎯 Différences avec Lovable
+## 🎯 Avantages de Devora
 
-| Fonctionnalité | CodeGen AI (Ce projet) | Lovable |
-|---------------|------------------------|---------|
+| Fonctionnalité | Devora | Autres solutions |
+|---------------|--------|------------------|
 | Prix | **100% Gratuit** | Payant (abonnement) |
 | Modèles IA | Tous les modèles OpenRouter | Limité |
-| Clé API | Votre propre clé | Incluse |
+| Clé API | Votre propre clé | Incluse/Limitée |
 | Code Source | Open Source | Propriétaire |
-| Déploiement | GitHub + Vercel | Intégré |
+| Déploiement | GitHub + Vercel | Variable |
 | Base de données | MongoDB (locale) | Cloud propriétaire |
 
 ## 🤝 Contribution
