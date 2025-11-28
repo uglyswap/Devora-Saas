@@ -514,7 +514,10 @@ async def generate_with_agentic_system(request: AgenticRequest):
 async def root():
     return {"message": "Devora API", "status": "running"}
 
-# Include router
+# Include routers
+app.include_router(auth_router, prefix="/api")
+app.include_router(billing_router, prefix="/api")
+app.include_router(admin_router, prefix="/api")
 app.include_router(api_router)
 
 app.add_middleware(
