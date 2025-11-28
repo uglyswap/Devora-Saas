@@ -7,15 +7,21 @@ from stripe_service import StripeService
 from email_service import EmailService
 from datetime import datetime, timezone, timedelta
 import logging
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Load environment variables
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix='/auth', tags=['authentication'])
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db = client[os.environ.get('DB_NAME', 'devora_projects_db')]
 
 @router.post('/register', response_model=Token)
 async def register(user_data: UserCreate):
