@@ -68,12 +68,22 @@ const Support = () => {
     setSending(true);
     
     try {
-      // Simuler l'envoi (à implémenter avec backend)
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast.success('Message envoyé ! Nous vous répondrons sous 24h.');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/support/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        toast.success('Message envoyé ! Nous vous répondrons sous 24h.');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        toast.error('Erreur lors de l\'envoi du message');
+      }
     } catch (error) {
+      console.error('Error sending contact message:', error);
       toast.error('Erreur lors de l\'envoi du message');
     } finally {
       setSending(false);
