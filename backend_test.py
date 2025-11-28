@@ -197,7 +197,7 @@ class DevoraAPITester:
 
     def run_all_tests(self):
         """Run all API tests"""
-        print("🚀 Starting Lovable Clone API Tests")
+        print("🚀 Starting Devora API Tests")
         print(f"📍 Testing API at: {self.api_url}")
         print("=" * 60)
 
