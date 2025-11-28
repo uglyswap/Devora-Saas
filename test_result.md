@@ -239,3 +239,45 @@
 
 Le backend Devora SaaS est **entièrement fonctionnel** et prêt pour l'ajout des clés Stripe/Resend en production. Tous les flux utilisateur critiques sont opérationnels.
 
+## ✅ Tests E2E Frontend Devora SaaS - 2025-11-28 23:30:00
+
+### Tests Planifiés (Frontend E2E)
+
+#### 1. **Page d'accueil** 
+- **URL**: http://localhost:3000
+- **Test**: Vérifier chargement et clic "Essai gratuit 7 jours" → redirection /register
+- **Status**: À tester
+
+#### 2. **Inscription** (/register)
+- **Test Data**: Email: frontend.test@example.com, Password: FrontendTest123!, Full Name: Frontend Test User
+- **Test**: Formulaire d'inscription et redirection vers /dashboard
+- **Status**: À tester
+
+#### 3. **Pages légales** (sans connexion)
+- **URLs**: /legal/terms, /legal/privacy
+- **Test**: Affichage des CGU et politique de confidentialité
+- **Status**: À tester
+
+#### 4. **Page Support** (/support)
+- **Test**: Affichage FAQ et formulaire de contact (sans soumission)
+- **Status**: À tester
+
+#### 5. **Connexion Admin** (/login)
+- **Test Data**: Email: admin@devora.fun, Password: Admin123!
+- **Test**: Connexion admin et redirection
+- **Status**: À tester
+
+#### 6. **Panel Admin** (/admin)
+- **Test**: Dashboard KPIs et formulaire de configuration
+- **Status**: À tester
+
+#### 7. **Page Billing** (/billing)
+- **Test**: Affichage statut d'abonnement
+- **Status**: À tester
+
+### Notes de Test
+- **URL Frontend**: https://codecreator-9.preview.emergentagent.com (depuis .env)
+- **Backend API**: https://codecreator-9.preview.emergentagent.com/api
+- **Stripe**: Mode test uniquement (pas de vrais paiements)
+- **Focus**: Validation UI et intégrations frontend/backend
+
