@@ -659,10 +659,17 @@ ${file.content}
               </Button>
             </div>
           </div>
-        </div>
+            </div>
+          </Panel>
 
-        {/* Code Editor & Preview */}
-        <div className="flex-1 flex flex-col">
+          <PanelResizeHandle className="w-1 bg-white/5 hover:bg-emerald-500/30 transition-colors cursor-col-resize" />
+
+          {/* Code Editor & Preview */}
+          <Panel defaultSize={80} minSize={40}>
+            <PanelGroup direction="horizontal">
+              {/* Editor Panel */}
+              <Panel defaultSize={50} minSize={30}>
+        <div className="h-full flex flex-col">
           {/* File Tabs */}
           <div className="border-b border-white/5 bg-black/20 flex items-center gap-2 px-4 py-2 overflow-x-auto flex-shrink-0">
             {project.files.map((file, idx) => (
