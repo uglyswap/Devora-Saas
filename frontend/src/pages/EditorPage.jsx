@@ -781,8 +781,10 @@ ${file.content}
                 />
               </div>
             </div>
-          </div>
-        </div>
+              </Panel>
+            </PanelGroup>
+          </Panel>
+        </PanelGroup>
       </div>
     </div>
   );
