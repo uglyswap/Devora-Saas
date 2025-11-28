@@ -363,7 +363,7 @@ async def export_to_github(request: ExportGithubRequest):
         try:
             repo = user.create_repo(
                 name=request.repo_name,
-                description=project.description or "Created with Lovable Clone",
+                description=project.description or "Created with Devora",
                 private=request.private,
                 auto_init=True
             )
