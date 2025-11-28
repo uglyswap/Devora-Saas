@@ -250,6 +250,9 @@ async def delete_project(project_id: str):
 @api_router.get("/openrouter/models")
 async def get_openrouter_models(api_key: str):
     """Get available models from OpenRouter"""
+    if not api_key or not api_key.strip():
+        raise HTTPException(status_code=422, detail="API key is required")
+    
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
@@ -266,6 +269,8 @@ async def get_openrouter_models(api_key: str):
                 return response.json()
             else:
                 raise HTTPException(status_code=response.status_code, detail="Failed to fetch models")
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
