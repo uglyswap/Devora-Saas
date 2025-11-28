@@ -1,6 +1,6 @@
-# CodeGen AI - Clone Lovable Gratuit
+# Devora - Générateur de Code IA Gratuit
 
-Une application complète de génération de code assistée par IA, similaire à Lovable, mais **100% gratuite et open source**. 
+Une application complète de génération de code assistée par IA, **100% gratuite et open source**. 
 
 ## 🌟 Fonctionnalités
 
