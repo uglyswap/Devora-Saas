@@ -205,7 +205,7 @@ class DevoraAPITester:
             "email": "test.user@example.com",
             "password": "TestUser123!"
         }
-        success, response = self.run_test("User Login", "POST", "auth/token", 200, test_data)
+        success, response = self.run_test("User Login", "POST", "auth/login", 200, test_data)
         if success and 'access_token' in response:
             self.user_token = response['access_token']
             print(f"✅ User login token: {self.user_token[:20]}...")
