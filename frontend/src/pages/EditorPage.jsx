@@ -787,7 +787,48 @@ ${file.content}
                 />
               </div>
             </div>
-            </SplitPane>
+              </SplitPane>
+            ) : (
+              /* Preview seul quand l'éditeur est masqué */
+              <div className="h-full flex flex-col bg-white">
+                <div className="p-2 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <Eye className="w-4 h-4 text-blue-500" />
+                    <span className="text-sm font-medium text-gray-700">Aperçu</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      data-testid="show-editor-button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowEditor(true)}
+                      className="text-gray-600 hover:text-gray-900"
+                      title="Afficher l'éditeur"
+                    >
+                      <PanelLeftOpen className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      data-testid="refresh-preview-button-fullscreen"
+                      variant="ghost"
+                      size="sm"
+                      onClick={updatePreview}
+                      className="text-gray-600 hover:text-gray-900"
+                    >
+                      <Play className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex-1 overflow-hidden">
+                  <iframe
+                    ref={iframeRef}
+                    data-testid="preview-iframe-fullscreen"
+                    title="Preview"
+                    className="w-full h-full border-0"
+                    sandbox="allow-scripts allow-modals"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
         </SplitPane>
