@@ -193,17 +193,43 @@ class DevoraAPITester:
             "password": "TestUser123!",
             "full_name": "Test User"
         }
-        success, response = self.run_test("User Registration", "POST", "auth/register", 200, test_data)
-        if success and 'access_token' in response:
-            self.user_token = response['access_token']
-            print(f"✅ User token obtained: {self.user_token[:20]}...")
-            return success, response
-        elif not success and 'Email already registered' in str(response):
-            # User already exists, this is acceptable for testing
-            print("ℹ️ User already exists (acceptable for testing)")
-            self.log_test("User Registration (already exists)", True, "User already registered - acceptable")
-            return True, response
-        return success, response
+        
+        # Try to register, but handle case where user already exists
+        url = f"{self.api_url}/auth/register"
+        headers = {'Content-Type': 'application/json'}
+        
+        print(f"\n🔍 Testing User Registration...")
+        
+        try:
+            response = requests.post(url, json=test_data, headers=headers, timeout=30)
+            
+            if response.status_code == 200:
+                # New user registered successfully
+                response_data = response.json()
+                if 'access_token' in response_data:
+                    self.user_token = response_data['access_token']
+                    print(f"✅ New user registered, token obtained: {self.user_token[:20]}...")
+                self.log_test("User Registration", True)
+                return True, response_data
+            elif response.status_code == 400 and 'Email already registered' in response.text:
+                # User already exists, this is acceptable for testing
+                print("ℹ️ User already exists (acceptable for testing)")
+                self.log_test("User Registration (already exists)", True, "User already registered - acceptable")
+                return True, {}
+            else:
+                error_msg = f"Expected 200 or 400 (already exists), got {response.status_code}"
+                if response.content:
+                    try:
+                        error_detail = response.json()
+                        error_msg += f" - {error_detail}"
+                    except:
+                        error_msg += f" - {response.text[:200]}"
+                self.log_test("User Registration", False, error_msg)
+                return False, {}
+                
+        except Exception as e:
+            self.log_test("User Registration", False, f"Exception: {str(e)}")
+            return False, {}
 
     def test_user_login(self):
         """Test user login"""
