@@ -636,6 +636,40 @@ ${file.content}
               <MessageSquare className="w-5 h-5 text-emerald-400" />
               Assistant IA
             </h2>
+            
+            {/* Agentic Mode Toggle */}
+            <div className="mt-3 bg-white/5 rounded-lg p-3 border border-white/10">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Bot className="w-4 h-4 text-emerald-400" />
+                  <span className="text-sm font-medium">Mode Agentique</span>
+                </div>
+                <button
+                  onClick={() => setUseAgenticMode(!useAgenticMode)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    useAgenticMode ? 'bg-emerald-500' : 'bg-gray-600'
+                  }`}
+                  data-testid="agentic-mode-toggle"
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      useAgenticMode ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+              <p className="text-xs text-gray-400">
+                {useAgenticMode ? (
+                  <>
+                    <Sparkles className="w-3 h-3 inline mr-1" />
+                    Système multi-agents : planification, génération, test et amélioration automatique
+                  </>
+                ) : (
+                  'Génération simple et rapide'
+                )}
+              </p>
+            </div>
+            
             <div className="mt-3 space-y-2">
               <Select value={selectedModel} onValueChange={setSelectedModel}>
                 <SelectTrigger data-testid="model-selector" className="bg-white/5 border-white/10">
