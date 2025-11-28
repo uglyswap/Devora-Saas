@@ -5,15 +5,21 @@ from models import AdminStats
 from auth import get_current_admin_user
 from datetime import datetime, timezone, timedelta
 import logging
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Load environment variables
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix='/admin', tags=['admin'])
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db = client[os.environ.get('DB_NAME', 'devora_projects_db')]
 
 @router.get('/stats', response_model=AdminStats)
 async def get_admin_stats(current_admin: dict = Depends(get_current_admin_user)):
