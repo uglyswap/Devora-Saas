@@ -748,10 +748,14 @@ ${file.content}
                   }}
                 />
               </div>
-            </div>
+        </div>
+              </Panel>
 
-            {/* Preview */}
-            <div className="flex-1 flex flex-col bg-white">
+              <PanelResizeHandle className="w-1 bg-white/5 hover:bg-emerald-500/30 transition-colors cursor-col-resize" />
+
+              {/* Preview Panel */}
+              <Panel defaultSize={50} minSize={30}>
+            <div className="h-full flex flex-col bg-white">
               <div className="p-2 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <Eye className="w-4 h-4 text-blue-500" />
