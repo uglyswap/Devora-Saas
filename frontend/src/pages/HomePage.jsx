@@ -71,11 +71,11 @@ const HomePage = () => {
             <Button
               data-testid="get-started-button"
               size="lg"
-              onClick={() => navigate('/editor')}
+              onClick={() => navigate('/register')}
               className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold px-8 py-6 text-lg rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-105 hover:shadow-emerald-500/30"
             >
               <Rocket className="w-5 h-5 mr-2" />
-              Commencer gratuitement
+              Essai gratuit 7 jours
             </Button>
             <Button
               data-testid="view-projects-button"
