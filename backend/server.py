@@ -206,6 +206,7 @@ async def delete_conversation(conversation_id: str):
 @api_router.post("/projects", response_model=Project)
 async def create_project(project: Project, current_user: dict = Depends(get_current_user)):
     doc = project.model_dump()
+    doc['user_id'] = current_user['user_id']  # Link to user
     doc['created_at'] = doc['created_at'].isoformat()
     doc['updated_at'] = doc['updated_at'].isoformat()
     
@@ -213,8 +214,8 @@ async def create_project(project: Project, current_user: dict = Depends(get_curr
     return project
 
 @api_router.get("/projects", response_model=List[Project])
-async def get_projects():
-    projects = await db.projects.find({}, {"_id": 0}).to_list(1000)
+async def get_projects(current_user: dict = Depends(get_current_user)):
+    projects = await db.projects.find({"user_id": current_user['user_id']}, {"_id": 0}).to_list(1000)
     
     for proj in projects:
         if isinstance(proj.get('created_at'), str):
