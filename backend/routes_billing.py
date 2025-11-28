@@ -191,6 +191,26 @@ async def stripe_webhook(request: Request):
             invoice_dict['created_at'] = invoice_dict['created_at'].isoformat()
             await db.invoices.insert_one(invoice_dict)
             logger.info(f'Invoice paid: {invoice_id} - Amount: {amount} {currency}')
+            
+            # Send invoice email
+            try:
+                period_start = datetime.fromtimestamp(data['period_start'])
+                period_end = datetime.fromtimestamp(data['period_end'])
+                period = f"{period_start.strftime('%d/%m/%Y')} - {period_end.strftime('%d/%m/%Y')}"
+                
+                html = EmailService.get_invoice_email(
+                    user.get('full_name', user['email'].split('@')[0]),
+                    amount,
+                    invoice_pdf or '#',
+                    period
+                )
+                await email_service.send_email(
+                    to=user['email'],
+                    subject=f'Votre facture Devora - {amount:.2f}€',
+                    html=html
+                )
+            except Exception as e:
+                logger.error(f'Failed to send invoice email: {str(e)}')
     
     elif event_type == 'invoice.payment_failed':
         # Invoice payment failed
