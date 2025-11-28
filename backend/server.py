@@ -260,7 +260,7 @@ async def get_openrouter_models(api_key: str):
                 headers={
                     "Authorization": f"Bearer {api_key}",
                     "HTTP-Referer": "http://localhost:3000",
-                    "X-Title": "Lovable Clone"
+                    "X-Title": "Devora"
                 },
                 timeout=30.0
             )
