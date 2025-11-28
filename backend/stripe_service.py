@@ -135,9 +135,9 @@ class StripeService:
             logger.error(f'Error retrieving subscription: {str(e)}')
             return None
     
-    @staticmethod
-    async def list_invoices(customer_id: str, limit: int = 10) -> list:
+    async def list_invoices(self, customer_id: str, limit: int = 10) -> list:
         """List customer invoices"""
+        await self._ensure_stripe_configured()
         try:
             invoices = stripe.Invoice.list(
                 customer=customer_id,
