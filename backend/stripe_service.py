@@ -1,0 +1,134 @@
+import stripe
+import os
+from typing import Optional
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Initialize Stripe
+stripe.api_key = os.environ.get('STRIPE_SECRET_KEY', '')
+
+class StripeService:
+    """Service for handling Stripe operations"""
+    
+    PRICE_ID = os.environ.get('STRIPE_PRICE_ID', '')  # Price ID for 9.90€/month
+    
+    @staticmethod
+    async def create_customer(email: str, name: Optional[str] = None) -> str:
+        """Create a Stripe customer"""
+        try:
+            customer = stripe.Customer.create(
+                email=email,
+                name=name,
+                metadata={'source': 'devora'}
+            )
+            logger.info(f'Created Stripe customer: {customer.id}')
+            return customer.id
+        except stripe.error.StripeError as e:
+            logger.error(f'Error creating Stripe customer: {str(e)}')
+            raise
+    
+    @staticmethod
+    async def create_checkout_session(
+        customer_id: str,
+        success_url: str,
+        cancel_url: str,
+        user_id: str
+    ) -> dict:
+        """Create a Stripe checkout session for subscription"""
+        try:
+            session = stripe.checkout.Session.create(
+                customer=customer_id,
+                payment_method_types=['card'],
+                line_items=[{
+                    'price': StripeService.PRICE_ID,
+                    'quantity': 1,
+                }],
+                mode='subscription',
+                success_url=success_url + '?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=cancel_url,
+                metadata={
+                    'user_id': user_id
+                },
+                allow_promotion_codes=True,
+            )
+            return {
+                'session_id': session.id,
+                'url': session.url
+            }
+        except stripe.error.StripeError as e:
+            logger.error(f'Error creating checkout session: {str(e)}')
+            raise
+    
+    @staticmethod
+    async def create_portal_session(customer_id: str, return_url: str) -> str:
+        """Create a Stripe customer portal session for managing subscription"""
+        try:
+            session = stripe.billing_portal.Session.create(
+                customer=customer_id,
+                return_url=return_url,
+            )
+            return session.url
+        except stripe.error.StripeError as e:
+            logger.error(f'Error creating portal session: {str(e)}')
+            raise
+    
+    @staticmethod
+    async def cancel_subscription(subscription_id: str) -> bool:
+        """Cancel a subscription"""
+        try:
+            stripe.Subscription.delete(subscription_id)
+            logger.info(f'Canceled subscription: {subscription_id}')
+            return True
+        except stripe.error.StripeError as e:
+            logger.error(f'Error canceling subscription: {str(e)}')
+            return False
+    
+    @staticmethod
+    async def get_subscription(subscription_id: str) -> Optional[dict]:
+        """Get subscription details"""
+        try:
+            subscription = stripe.Subscription.retrieve(subscription_id)
+            return {
+                'id': subscription.id,
+                'status': subscription.status,
+                'current_period_end': subscription.current_period_end,
+                'cancel_at_period_end': subscription.cancel_at_period_end
+            }
+        except stripe.error.StripeError as e:
+            logger.error(f'Error retrieving subscription: {str(e)}')
+            return None
+    
+    @staticmethod
+    async def list_invoices(customer_id: str, limit: int = 10) -> list:
+        """List customer invoices"""
+        try:
+            invoices = stripe.Invoice.list(
+                customer=customer_id,
+                limit=limit
+            )
+            return [{
+                'id': inv.id,
+                'amount': inv.amount_paid / 100,  # Convert from cents
+                'currency': inv.currency,
+                'status': inv.status,
+                'invoice_pdf': inv.invoice_pdf,
+                'created': inv.created
+            } for inv in invoices.data]
+        except stripe.error.StripeError as e:
+            logger.error(f'Error listing invoices: {str(e)}')
+            return []
+    
+    @staticmethod
+    def verify_webhook_signature(payload: bytes, sig_header: str) -> dict:
+        """Verify Stripe webhook signature"""
+        webhook_secret = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, webhook_secret
+            )
+            return event
+        except ValueError:
+            raise ValueError('Invalid payload')
+        except stripe.error.SignatureVerificationError:
+            raise ValueError('Invalid signature')
