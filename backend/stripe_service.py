@@ -120,9 +120,9 @@ class StripeService:
             logger.error(f'Error canceling subscription: {str(e)}')
             return False
     
-    @staticmethod
-    async def get_subscription(subscription_id: str) -> Optional[dict]:
+    async def get_subscription(self, subscription_id: str) -> Optional[dict]:
         """Get subscription details"""
+        await self._ensure_stripe_configured()
         try:
             subscription = stripe.Subscription.retrieve(subscription_id)
             return {
