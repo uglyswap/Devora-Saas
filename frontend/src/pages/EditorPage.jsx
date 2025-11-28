@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { 
   ArrowLeft, Send, Save, Download, Github, Globe, 
   Loader2, Code2, Eye, MessageSquare, FileCode,
-  Play, Settings, Plus, X, Copy, Check, EyeOff, PanelLeftClose, PanelLeftOpen
+  Play, Settings, Plus, X, Copy, Check, EyeOff, PanelLeftClose, PanelLeftOpen,
+  Bot, Sparkles
 } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import axios from 'axios';
