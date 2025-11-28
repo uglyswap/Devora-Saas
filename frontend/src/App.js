@@ -10,6 +10,7 @@ import SettingsPage from './pages/SettingsPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Billing from './pages/Billing';
+import AdminPanel from './pages/AdminPanel';
 import { Toaster } from './components/ui/sonner';
 import './App.css';
 
