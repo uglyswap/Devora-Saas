@@ -358,6 +358,66 @@ class DevoraAPITester:
             except:
                 pass
 
+    def run_devora_saas_tests(self):
+        """Run Devora SaaS user flow tests"""
+        print("🚀 Starting Devora SaaS User Flow Tests")
+        print(f"📍 Testing API at: {self.api_url}")
+        print("=" * 80)
+
+        # Basic health check
+        self.test_health_check()
+
+        # 1. User Registration
+        print("\n👤 Testing User Registration...")
+        self.test_user_registration()
+
+        # 2. User Login (alternative method)
+        print("\n🔐 Testing User Login...")
+        self.test_user_login()
+
+        # 3. User Info
+        print("\n📋 Testing User Info...")
+        self.test_user_info()
+
+        # 4. Billing Plans
+        print("\n💳 Testing Billing Plans...")
+        self.test_billing_plans()
+
+        # 5. Admin Login
+        print("\n👑 Testing Admin Login...")
+        self.test_admin_login()
+
+        # 6. Admin Stats
+        print("\n📊 Testing Admin Stats...")
+        self.test_admin_stats()
+
+        # 7. Admin Config Get
+        print("\n⚙️ Testing Admin Config Get...")
+        self.test_admin_config_get()
+
+        # 8. Admin Config Update
+        print("\n🔧 Testing Admin Config Update...")
+        self.test_admin_config_update()
+
+        # 9. Contact Support
+        print("\n📞 Testing Contact Support...")
+        self.test_contact_support()
+
+        # Print results
+        print("\n" + "=" * 80)
+        print(f"📊 Devora SaaS Test Results: {self.tests_passed}/{self.tests_run} tests passed")
+        
+        if self.tests_passed == self.tests_run:
+            print("🎉 All Devora SaaS tests passed!")
+            return 0
+        else:
+            print("⚠️  Some tests failed. Check the details above.")
+            failed_tests = [test for test in self.test_results if not test['success']]
+            print("\nFailed tests:")
+            for test in failed_tests:
+                print(f"  - {test['name']}: {test['details']}")
+            return 1
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting Devora API Tests")
