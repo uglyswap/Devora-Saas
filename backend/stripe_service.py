@@ -96,9 +96,9 @@ class StripeService:
             logger.error(f'Error creating checkout session: {str(e)}')
             raise
     
-    @staticmethod
-    async def create_portal_session(customer_id: str, return_url: str) -> str:
+    async def create_portal_session(self, customer_id: str, return_url: str) -> str:
         """Create a Stripe customer portal session for managing subscription"""
+        await self._ensure_stripe_configured()
         try:
             session = stripe.billing_portal.Session.create(
                 customer=customer_id,
