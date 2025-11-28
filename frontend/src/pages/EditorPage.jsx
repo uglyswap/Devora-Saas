@@ -661,7 +661,7 @@ ${file.content}
         </div>
 
         {/* Code Editor & Preview */}
-        <div className="flex-1 flex flex-col">
+        <div className="h-full flex flex-col">
           {/* File Tabs */}
           <div className="border-b border-white/5 bg-black/20 flex items-center gap-2 px-4 py-2 overflow-x-auto flex-shrink-0">
             {project.files.map((file, idx) => (
