@@ -551,10 +551,15 @@ ${file.content}
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        <PanelGroup direction="horizontal">
+        <SplitPane
+          split="vertical"
+          minSize={250}
+          maxSize={600}
+          defaultSize={320}
+          style={{ position: 'relative' }}
+        >
           {/* Chat Panel */}
-          <Panel defaultSize={20} minSize={15} maxSize={35}>
-            <div className="h-full border-r border-white/5 bg-black/20 flex flex-col">
+          <div className="h-full border-r border-white/5 bg-black/20 flex flex-col">
           <div className="p-4 border-b border-white/5 flex-shrink-0">
             <h2 className="text-lg font-semibold flex items-center gap-2">
               <MessageSquare className="w-5 h-5 text-emerald-400" />
