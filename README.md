@@ -169,7 +169,7 @@ Et bien d'autres modèles disponibles sur OpenRouter !
 ### Backend (.env)
 ```env
 MONGO_URL=mongodb://localhost:27017
-DB_NAME=lovable_clone_db
+DB_NAME=devora_projects_db
 CORS_ORIGINS=*
 ```
 
