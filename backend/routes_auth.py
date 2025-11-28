@@ -4,7 +4,8 @@ import os
 from models import User, UserCreate, UserLogin, UserResponse, Token
 from auth import get_password_hash, verify_password, create_access_token, get_current_user
 from stripe_service import StripeService
-from datetime import datetime, timezone
+from email_service import EmailService
+from datetime import datetime, timezone, timedelta
 import logging
 
 logger = logging.getLogger(__name__)
