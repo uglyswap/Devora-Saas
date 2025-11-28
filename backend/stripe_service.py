@@ -31,9 +31,9 @@ class StripeService:
         _, webhook_secret, _ = await self.config_service.get_stripe_keys()
         return webhook_secret
     
-    @staticmethod
-    async def create_customer(email: str, name: Optional[str] = None) -> str:
+    async def create_customer(self, email: str, name: Optional[str] = None) -> str:
         """Create a Stripe customer"""
+        await self._ensure_stripe_configured()
         try:
             customer = stripe.Customer.create(
                 email=email,
