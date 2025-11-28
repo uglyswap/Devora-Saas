@@ -83,10 +83,9 @@ async def create_portal_session(current_user: dict = Depends(get_current_user)):
             detail='No billing information found'
         )
     
-    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
-    portal_url = await StripeService.create_portal_session(
+    portal_url = await stripe_service.create_portal_session(
         customer_id=user['stripe_customer_id'],
-        return_url=f"{frontend_url}/billing"
+        return_url=f"{settings.FRONTEND_URL}/billing"
     )
     
     return {'url': portal_url}
