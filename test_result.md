@@ -101,3 +101,54 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+## ✅ Configuration Backend Fixée - 2025-11-28 22:44:52
+
+### Problème Résolu
+- Backend ne démarrait pas (NameError: 'Depends' not defined, KeyError: 'MONGO_URL')
+- Configuration dispersée dans plusieurs fichiers
+
+### Solution Implémentée
+1. **Configuration Centralisée** (/app/backend/config.py)
+   - Utilise pydantic-settings pour charger .env
+   - Instance globale unique 'settings'
+   
+2. **Service de Configuration Système** (/app/backend/config_service.py)
+   - Gestion de la config Stripe/Resend en DB
+   - Config modifiable via admin panel
+   
+3. **Refactorisation des Services**
+   - stripe_service.py : Instance-based, charge config depuis DB
+   - email_service.py : Instance-based, charge config depuis DB
+   - Tous les fichiers utilisent maintenant 'from config import settings'
+
+4. **Panel Admin** (/app/frontend/src/pages/AdminPanel.jsx)
+   - Interface complète pour configurer Stripe et Resend
+   - Affichage des KPIs (users, revenue, projects, churn)
+   - Paramètres de facturation (prix, essai gratuit, max failed payments)
+
+### Tests Effectués
+- ✅ Backend démarre correctement
+- ✅ Endpoint /api/billing/plans fonctionne
+- ✅ Frontend accessible
+- ✅ Configuration centralisée opérationnelle
+
+### Routes Admin Ajoutées
+- GET /api/admin/config - Récupère la configuration système
+- PUT /api/admin/config - Met à jour la configuration
+- GET /api/admin/stats - KPIs dashboard
+- GET /api/admin/users - Liste utilisateurs
+- PUT /api/admin/users/{user_id}/status - Active/désactive user
+
+### Prochaines Étapes
+1. Tester l'inscription utilisateur avec essai gratuit 7 jours
+2. Configurer Stripe via admin panel (nécessite clés API test)
+3. Tester le flux de checkout Stripe
+4. Implémenter les pages légales (ToS, Privacy)
+5. Créer la page Support/FAQ
+
+### Notes Importantes
+- **Admin Access**: Nécessite is_admin: true dans MongoDB
+- **Stripe & Resend**: Entièrement configurables via /admin
+- **Prix dynamique**: Créé à la volée lors du checkout
+- **Essai gratuit**: Appliqué automatiquement (7 jours par défaut)
+
