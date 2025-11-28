@@ -711,9 +711,7 @@ ${file.content}
           </div>
 
           {/* Editor & Preview Split */}
-          <div className="flex-1 flex overflow-hidden">
-            {/* Code Editor */}
-            <div className="flex-1 flex flex-col border-r border-white/5">
+          <div className="flex-1 flex flex-col overflow-hidden border-r border-white/5">
               <div className="p-2 border-b border-white/5 bg-black/20 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <Code2 className="w-4 h-4 text-emerald-400" />
