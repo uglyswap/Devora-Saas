@@ -461,7 +461,7 @@ async def deploy_to_vercel(request: DeployVercelRequest):
 # Health check
 @api_router.get("/")
 async def root():
-    return {"message": "Lovable Clone API", "status": "running"}
+    return {"message": "Devora API", "status": "running"}
 
 # Include router
 app.include_router(api_router)
