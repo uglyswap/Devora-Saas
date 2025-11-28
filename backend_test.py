@@ -252,7 +252,7 @@ class DevoraAPITester:
             return 1
 
 def main():
-    tester = LovableCloneAPITester()
+    tester = DevoraAPITester()
     return tester.run_all_tests()
 
 if __name__ == "__main__":
