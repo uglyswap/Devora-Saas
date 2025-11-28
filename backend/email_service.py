@@ -27,11 +27,11 @@ class EmailService:
                 response = await client.post(
                     'https://api.resend.com/emails',
                     headers={
-                        'Authorization': f'Bearer {EmailService.RESEND_API_KEY}',
+                        'Authorization': f'Bearer {api_key}',
                         'Content-Type': 'application/json'
                     },
                     json={
-                        'from': f'{EmailService.FROM_NAME} <{EmailService.FROM_EMAIL}>',
+                        'from': f'Devora <{from_email}>',
                         'to': [to],
                         'subject': subject,
                         'html': html
