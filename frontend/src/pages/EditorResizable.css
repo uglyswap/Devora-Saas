@@ -1,0 +1,42 @@
+.editor-container {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.resizable-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: transparent;
+  cursor: col-resize;
+  z-index: 10;
+  transition: background-color 0.2s;
+}
+
+.resize-handle:hover {
+  background-color: rgba(16, 185, 129, 0.3);
+}
+
+.resize-handle:active {
+  background-color: rgba(16, 185, 129, 0.5);
+}
+
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 1px;
+}
