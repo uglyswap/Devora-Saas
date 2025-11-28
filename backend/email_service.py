@@ -1,22 +1,24 @@
 import httpx
-import os
 import logging
 from typing import Optional
 from datetime import datetime
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from config_service import ConfigService
 
 logger = logging.getLogger(__name__)
 
 class EmailService:
     """Service for sending emails via Resend"""
     
-    RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
-    FROM_EMAIL = 'noreply@devora.fun'
-    FROM_NAME = 'Devora'
+    def __init__(self, db: AsyncIOMotorDatabase):
+        self.db = db
+        self.config_service = ConfigService(db)
     
-    @staticmethod
-    async def send_email(to: str, subject: str, html: str) -> bool:
+    async def send_email(self, to: str, subject: str, html: str) -> bool:
         """Send an email via Resend"""
-        if not EmailService.RESEND_API_KEY:
+        api_key, from_email = await self.config_service.get_resend_config()
+        
+        if not api_key:
             logger.warning('RESEND_API_KEY not configured, skipping email')
             return False
         
