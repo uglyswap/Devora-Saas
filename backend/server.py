@@ -204,7 +204,7 @@ async def delete_conversation(conversation_id: str):
 
 # Project Routes
 @api_router.post("/projects", response_model=Project)
-async def create_project(project: Project):
+async def create_project(project: Project, current_user: dict = Depends(get_current_user)):
     doc = project.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     doc['updated_at'] = doc['updated_at'].isoformat()
