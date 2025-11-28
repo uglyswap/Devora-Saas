@@ -1,7 +1,7 @@
 import requests
 import sys
 import json
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 class DevoraAPITester:
     def __init__(self, base_url="https://codecreator-9.preview.emergentagent.com"):
@@ -12,8 +12,11 @@ class DevoraAPITester:
         self.test_results = []
         self.created_resources = {
             'projects': [],
-            'conversations': []
+            'conversations': [],
+            'users': []
         }
+        self.user_token = None
+        self.admin_token = None
 
     def log_test(self, name, success, details=""):
         """Log test result"""
