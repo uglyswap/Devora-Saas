@@ -35,6 +35,7 @@ const EditorPage = () => {
   const [generating, setGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
+  const [useAgenticMode, setUseAgenticMode] = useState(true);
   
   // Project state
   const [project, setProject] = useState({
