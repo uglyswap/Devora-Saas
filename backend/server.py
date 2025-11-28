@@ -94,6 +94,13 @@ class OpenRouterRequest(BaseModel):
     api_key: str
     conversation_history: List[Dict[str, str]] = []
 
+class AgenticRequest(BaseModel):
+    message: str
+    model: str
+    api_key: str
+    current_files: List[ProjectFile] = []
+    project_id: Optional[str] = None
+
 class ExportGithubRequest(BaseModel):
     project_id: str
     repo_name: str
