@@ -260,7 +260,7 @@ class DevoraAPITester:
             "email": "admin@devora.fun",
             "password": "Admin123!"
         }
-        success, response = self.run_test("Admin Login", "POST", "auth/token", 200, test_data)
+        success, response = self.run_test("Admin Login", "POST", "auth/login", 200, test_data)
         if success and 'access_token' in response:
             self.admin_token = response['access_token']
             print(f"✅ Admin token obtained: {self.admin_token[:20]}...")
