@@ -1,10 +1,7 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Body
-from dotenv import load_dotenv
+from fastapi import FastAPI, APIRouter, HTTPException, Body, Depends
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
-import os
 import logging
-from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict, Any
 import uuid
@@ -15,18 +12,15 @@ import json
 import base64
 from github import Github
 from agents.orchestrator import OrchestratorAgent
+from config import settings
 from routes_auth import router as auth_router
 from routes_billing import router as billing_router
 from routes_admin import router as admin_router
 from auth import get_current_user
 
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
-
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# MongoDB connection with centralized config
+client = AsyncIOMotorClient(settings.MONGO_URL)
+db = client[settings.DB_NAME]
 
 # Create the main app
 app = FastAPI()
