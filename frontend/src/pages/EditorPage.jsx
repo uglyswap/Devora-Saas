@@ -781,10 +781,8 @@ ${file.content}
                 />
               </div>
             </div>
-              </Panel>
-            </PanelGroup>
-          </Panel>
-        </PanelGroup>
+          </div>
+        </div>
       </div>
     </div>
   );
