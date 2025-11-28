@@ -62,7 +62,7 @@ async def register(user_data: UserCreate):
     # Send welcome email
     try:
         html = EmailService.get_welcome_email(user.full_name or user.email.split('@')[0])
-        await EmailService.send_email(
+        await email_service.send_email(
             to=user.email,
             subject='Bienvenue sur Devora ! 🎉',
             html=html
