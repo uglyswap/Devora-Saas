@@ -155,10 +155,12 @@ class StripeService:
             logger.error(f'Error listing invoices: {str(e)}')
             return []
     
-    @staticmethod
-    def verify_webhook_signature(payload: bytes, sig_header: str) -> dict:
+    async def verify_webhook_signature(self, payload: bytes, sig_header: str) -> dict:
         """Verify Stripe webhook signature"""
-        webhook_secret = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+        webhook_secret = await self.get_webhook_secret()
+        if not webhook_secret:
+            raise ValueError('Webhook secret not configured')
+        
         try:
             event = stripe.Webhook.construct_event(
                 payload, sig_header, webhook_secret
