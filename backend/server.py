@@ -259,7 +259,7 @@ async def get_openrouter_models(api_key: str):
                 "https://openrouter.ai/api/v1/models",
                 headers={
                     "Authorization": f"Bearer {api_key}",
-                    "HTTP-Referer": "http://localhost:3000",
+                    "HTTP-Referer": os.environ.get('FRONTEND_URL', 'http://localhost:3000'),
                     "X-Title": "Devora"
                 },
                 timeout=30.0
