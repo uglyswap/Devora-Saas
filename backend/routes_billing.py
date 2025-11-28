@@ -24,7 +24,9 @@ config_service = ConfigService(db)
 @router.get('/plans', response_model=SubscriptionPlan)
 async def get_subscription_plans():
     """Get available subscription plans"""
-    return SubscriptionPlan()
+    # Récupère le prix depuis la config système
+    billing_settings = await config_service.get_billing_settings()
+    return SubscriptionPlan(price=billing_settings["price"])
 
 @router.post('/create-checkout-session')
 async def create_checkout_session(current_user: dict = Depends(get_current_user)):
