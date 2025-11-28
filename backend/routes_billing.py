@@ -215,6 +215,8 @@ async def stripe_webhook(request: Request):
     elif event_type == 'invoice.payment_failed':
         # Invoice payment failed
         subscription_id = data.get('subscription')
+        customer_id = data['customer']
+        amount = data['amount_due'] / 100
         
         if subscription_id:
             await db.users.update_one(
@@ -225,5 +227,21 @@ async def stripe_webhook(request: Request):
                 }}
             )
             logger.warning(f'Payment failed for subscription: {subscription_id}')
+            
+            # Send payment failed email
+            try:
+                user = await db.users.find_one({'stripe_customer_id': customer_id}, {'_id': 0})
+                if user:
+                    html = EmailService.get_payment_failed_email(
+                        user.get('full_name', user['email'].split('@')[0]),
+                        amount
+                    )
+                    await email_service.send_email(
+                        to=user['email'],
+                        subject='⚠️ Échec de paiement - Devora',
+                        html=html
+                    )
+            except Exception as e:
+                logger.error(f'Failed to send payment failed email: {str(e)}')
     
     return {'status': 'success'}
