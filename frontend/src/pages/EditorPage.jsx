@@ -236,29 +236,20 @@ const EditorPage = () => {
     const cssFile = project.files.find(f => f.name.endsWith('.css'));
     const jsFile = project.files.find(f => f.name.endsWith('.js'));
 
-    let html = htmlFile?.content || '<h1>Pas de fichier HTML</h1>';
+    let html = htmlFile?.content || '<!DOCTYPE html><html><head></head><body><h1>Pas de fichier HTML</h1></body></html>';
     
     // Inject CSS
-    if (cssFile) {
+    if (cssFile && html.includes('</head>')) {
       html = html.replace('</head>', `<style>${cssFile.content}</style></head>`);
     }
     
     // Inject JS
-    if (jsFile) {
+    if (jsFile && html.includes('</body>')) {
       html = html.replace('</body>', `<script>${jsFile.content}</script></body>`);
     }
 
-    try {
-      const iframe = iframeRef.current;
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-      if (iframeDoc) {
-        iframeDoc.open();
-        iframeDoc.write(html);
-        iframeDoc.close();
-      }
-    } catch (error) {
-      console.error('Error updating preview:', error);
-    }
+    // Use srcdoc to avoid CORS issues
+    iframeRef.current.srcdoc = html;
   };
 
   const exportToGithub = async () => {
