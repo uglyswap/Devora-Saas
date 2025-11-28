@@ -248,11 +248,17 @@ const EditorPage = () => {
       html = html.replace('</body>', `<script>${jsFile.content}</script></body>`);
     }
 
-    const iframe = iframeRef.current;
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    iframeDoc.open();
-    iframeDoc.write(html);
-    iframeDoc.close();
+    try {
+      const iframe = iframeRef.current;
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (iframeDoc) {
+        iframeDoc.open();
+        iframeDoc.write(html);
+        iframeDoc.close();
+      }
+    } catch (error) {
+      console.error('Error updating preview:', error);
+    }
   };
 
   const exportToGithub = async () => {
