@@ -55,6 +55,12 @@ function App() {
                 <SettingsPage />
               </ProtectedRoute>
             } />
+            
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                <AdminPanel />
+              </ProtectedRoute>
+            } />
           </Routes>
           <CookieConsent />
         </BrowserRouter>
