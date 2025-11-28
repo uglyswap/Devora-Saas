@@ -109,9 +109,9 @@ class StripeService:
             logger.error(f'Error creating portal session: {str(e)}')
             raise
     
-    @staticmethod
-    async def cancel_subscription(subscription_id: str) -> bool:
+    async def cancel_subscription(self, subscription_id: str) -> bool:
         """Cancel a subscription"""
+        await self._ensure_stripe_configured()
         try:
             stripe.Subscription.delete(subscription_id)
             logger.info(f'Canceled subscription: {subscription_id}')
