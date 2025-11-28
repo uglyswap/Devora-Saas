@@ -15,6 +15,10 @@ import json
 import base64
 from github import Github
 from agents.orchestrator import OrchestratorAgent
+from routes_auth import router as auth_router
+from routes_billing import router as billing_router
+from routes_admin import router as admin_router
+from auth import get_current_user
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
