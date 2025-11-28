@@ -23,6 +23,7 @@ import {
 } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
 import SplitPane from 'react-split-pane';
+import './EditorPage.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
