@@ -514,6 +514,7 @@ async def root():
 app.include_router(auth_router, prefix="/api")
 app.include_router(billing_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
+app.include_router(support_router, prefix="/api")
 app.include_router(api_router)
 
 app.add_middleware(
