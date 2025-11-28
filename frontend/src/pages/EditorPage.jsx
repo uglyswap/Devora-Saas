@@ -772,8 +772,10 @@ ${file.content}
                 />
               </div>
             </div>
+            </SplitPane>
           </div>
         </div>
+        </SplitPane>
       </div>
     </div>
   );
