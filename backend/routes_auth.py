@@ -65,7 +65,7 @@ async def register(user_data: UserCreate):
             html=html
         )
     except Exception as e:
-        logger.error(f'Failed to send welcome email: {str(e)}')\n    
+        logger.error(f'Failed to send welcome email: {str(e)}')
     # Create access token
     access_token = create_access_token(data={'sub': user.id, 'email': user.email})
     
