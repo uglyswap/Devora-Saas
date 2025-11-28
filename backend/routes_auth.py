@@ -33,7 +33,7 @@ async def register(user_data: UserCreate):
     
     # Create Stripe customer
     try:
-        stripe_customer_id = await StripeService.create_customer(
+        stripe_customer_id = await stripe_service.create_customer(
             email=user_data.email,
             name=user_data.full_name
         )
