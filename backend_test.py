@@ -184,6 +184,162 @@ class DevoraAPITester:
         # We expect this to fail, so if it returns 500, that's expected behavior
         return True, response  # Override success since we expect this to fail
 
+    # ===== DEVORA SAAS USER FLOW TESTS =====
+    
+    def test_user_registration(self):
+        """Test user registration"""
+        test_data = {
+            "email": "test.user@example.com",
+            "password": "TestUser123!",
+            "full_name": "Test User"
+        }
+        success, response = self.run_test("User Registration", "POST", "auth/register", 200, test_data)
+        if success and 'access_token' in response:
+            self.user_token = response['access_token']
+            print(f"✅ User token obtained: {self.user_token[:20]}...")
+        return success, response
+
+    def test_user_login(self):
+        """Test user login"""
+        test_data = {
+            "email": "test.user@example.com",
+            "password": "TestUser123!"
+        }
+        success, response = self.run_test("User Login", "POST", "auth/token", 200, test_data)
+        if success and 'access_token' in response:
+            self.user_token = response['access_token']
+            print(f"✅ User login token: {self.user_token[:20]}...")
+        return success, response
+
+    def test_user_info(self):
+        """Test getting user info"""
+        if not self.user_token:
+            self.log_test("User Info (no token)", False, "No user token available")
+            return False, {}
+        
+        success, response = self.run_test("User Info", "GET", "auth/me", 200, token=self.user_token)
+        if success:
+            # Verify subscription status and trial period
+            if response.get('subscription_status') == 'trialing':
+                print(f"✅ User has trialing status")
+                # Check if current_period_end is approximately 7 days from now
+                if 'current_period_end' in response:
+                    print(f"✅ Trial period end: {response['current_period_end']}")
+                else:
+                    print("⚠️ No current_period_end found")
+            else:
+                print(f"⚠️ Unexpected subscription status: {response.get('subscription_status')}")
+        return success, response
+
+    def test_billing_plans(self):
+        """Test getting subscription plans"""
+        success, response = self.run_test("Billing Plans", "GET", "billing/plans", 200)
+        if success:
+            # Verify plan details
+            expected_price = 9.90
+            expected_interval = "month"
+            if response.get('price') == expected_price:
+                print(f"✅ Correct price: {expected_price}€")
+            else:
+                print(f"⚠️ Unexpected price: {response.get('price')} (expected {expected_price})")
+            
+            if response.get('interval') == expected_interval:
+                print(f"✅ Correct interval: {expected_interval}")
+            else:
+                print(f"⚠️ Unexpected interval: {response.get('interval')} (expected {expected_interval})")
+                
+            if 'features' in response and len(response['features']) > 0:
+                print(f"✅ Features present: {len(response['features'])} features")
+            else:
+                print("⚠️ No features found")
+        return success, response
+
+    def test_admin_login(self):
+        """Test admin login"""
+        test_data = {
+            "email": "admin@devora.fun",
+            "password": "Admin123!"
+        }
+        success, response = self.run_test("Admin Login", "POST", "auth/token", 200, test_data)
+        if success and 'access_token' in response:
+            self.admin_token = response['access_token']
+            print(f"✅ Admin token obtained: {self.admin_token[:20]}...")
+        return success, response
+
+    def test_admin_stats(self):
+        """Test admin stats"""
+        if not self.admin_token:
+            self.log_test("Admin Stats (no token)", False, "No admin token available")
+            return False, {}
+        
+        success, response = self.run_test("Admin Stats", "GET", "admin/stats", 200, token=self.admin_token)
+        if success:
+            # Verify stats structure
+            expected_fields = ['total_users', 'active_subscriptions', 'total_revenue', 'total_projects', 'new_users_this_month', 'churn_rate']
+            for field in expected_fields:
+                if field in response:
+                    print(f"✅ {field}: {response[field]}")
+                else:
+                    print(f"⚠️ Missing field: {field}")
+            
+            # Check if total_users >= 1 (we just registered a user)
+            if response.get('total_users', 0) >= 1:
+                print(f"✅ Total users >= 1: {response.get('total_users')}")
+            else:
+                print(f"⚠️ Expected total_users >= 1, got: {response.get('total_users')}")
+        return success, response
+
+    def test_admin_config_get(self):
+        """Test getting admin config"""
+        if not self.admin_token:
+            self.log_test("Admin Config Get (no token)", False, "No admin token available")
+            return False, {}
+        
+        success, response = self.run_test("Admin Config Get", "GET", "admin/config", 200, token=self.admin_token)
+        if success:
+            # Verify config structure
+            expected_fields = ['stripe_test_mode', 'subscription_price', 'free_trial_days']
+            for field in expected_fields:
+                if field in response:
+                    print(f"✅ {field}: {response[field]}")
+                else:
+                    print(f"⚠️ Missing field: {field}")
+        return success, response
+
+    def test_admin_config_update(self):
+        """Test updating admin config"""
+        if not self.admin_token:
+            self.log_test("Admin Config Update (no token)", False, "No admin token available")
+            return False, {}
+        
+        test_data = {
+            "free_trial_days": 10
+        }
+        success, response = self.run_test("Admin Config Update", "PUT", "admin/config", 200, test_data, token=self.admin_token)
+        if success:
+            # Verify the update was applied
+            if response.get('free_trial_days') == 10:
+                print(f"✅ Config updated: free_trial_days = 10")
+            else:
+                print(f"⚠️ Config not updated correctly: {response.get('free_trial_days')}")
+        return success, response
+
+    def test_contact_support(self):
+        """Test contact support"""
+        test_data = {
+            "name": "Test User",
+            "email": "test@example.com",
+            "subject": "Test contact",
+            "message": "This is a test message"
+        }
+        success, response = self.run_test("Contact Support", "POST", "support/contact", 200, test_data)
+        if success:
+            if response.get('status') == 'success':
+                print(f"✅ Contact form submitted successfully")
+            else:
+                print(f"⚠️ Unexpected response status: {response.get('status')}")
+        return success, response
+
     def cleanup_resources(self):
         """Clean up created test resources"""
         print("\n🧹 Cleaning up test resources...")
