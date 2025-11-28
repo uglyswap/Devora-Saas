@@ -108,7 +108,7 @@ async def stripe_webhook(request: Request):
     sig_header = request.headers.get('stripe-signature')
     
     try:
-        event = StripeService.verify_webhook_signature(payload, sig_header)
+        event = await stripe_service.verify_webhook_signature(payload, sig_header)
     except ValueError as e:
         logger.error(f'Webhook error: {str(e)}')
         raise HTTPException(status_code=400, detail=str(e))
