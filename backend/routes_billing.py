@@ -98,7 +98,7 @@ async def get_invoices(current_user: dict = Depends(get_current_user)):
     if not user or not user.get('stripe_customer_id'):
         return []
     
-    invoices = await StripeService.list_invoices(user['stripe_customer_id'])
+    invoices = await stripe_service.list_invoices(user['stripe_customer_id'])
     return invoices
 
 @router.post('/webhook')
