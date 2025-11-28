@@ -64,6 +64,13 @@ function App() {
                 <AdminPanel />
               </ProtectedRoute>
             } />
+            
+            {/* Legal Pages */}
+            <Route path="/legal/terms" element={<TermsOfService />} />
+            <Route path="/legal/privacy" element={<PrivacyPolicy />} />
+            
+            {/* Support */}
+            <Route path="/support" element={<Support />} />
           </Routes>
           <CookieConsent />
         </BrowserRouter>
