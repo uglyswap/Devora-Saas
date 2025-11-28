@@ -47,11 +47,25 @@ async def register(user_data: UserCreate):
     )
     
     user_dict = user.model_dump()
+    # Set trial period (7 days)
+    user_dict['subscription_status'] = 'trialing'
+    trial_end = datetime.now(timezone.utc) + timedelta(days=7)
+    user_dict['current_period_end'] = trial_end.isoformat()
     user_dict['created_at'] = user_dict['created_at'].isoformat()
     user_dict['updated_at'] = user_dict['updated_at'].isoformat()
     
     await db.users.insert_one(user_dict)
     
+    # Send welcome email
+    try:
+        html = EmailService.get_welcome_email(user.full_name or user.email.split('@')[0])
+        await EmailService.send_email(
+            to=user.email,
+            subject='Bienvenue sur Devora ! 🎉',
+            html=html
+        )
+    except Exception as e:
+        logger.error(f'Failed to send welcome email: {str(e)}')\n    
     # Create access token
     access_token = create_access_token(data={'sub': user.id, 'email': user.email})
     
