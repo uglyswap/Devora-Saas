@@ -37,6 +37,7 @@ class BaseAgent(ABC):
     async def call_llm(self, messages: List[Dict[str, str]], system_prompt: str = None) -> str:
         """Call the LLM API"""
         import httpx
+        import os
         
         full_messages = []
         if system_prompt:
@@ -49,7 +50,7 @@ class BaseAgent(ABC):
                     "https://openrouter.ai/api/v1/chat/completions",
                     headers={
                         "Authorization": f"Bearer {self.api_key}",
-                        "HTTP-Referer": "http://localhost:3000",
+                        "HTTP-Referer": os.environ.get('FRONTEND_URL', 'http://localhost:3000'),
                         "X-Title": "Devora",
                         "Content-Type": "application/json"
                     },
