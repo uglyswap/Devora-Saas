@@ -761,11 +761,16 @@ ${file.content}
               />
               <Button
                 data-testid="send-message-button"
-                onClick={sendMessage}
+                onClick={() => sendMessage(useAgenticMode)}
                 disabled={generating || !apiKey}
-                className="bg-emerald-500 hover:bg-emerald-600 self-end"
+                className={`self-end ${
+                  useAgenticMode 
+                    ? 'bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600' 
+                    : 'bg-emerald-500 hover:bg-emerald-600'
+                }`}
+                title={useAgenticMode ? 'Générer avec système agentique' : 'Générer normalement'}
               >
-                <Send className="w-4 h-4" />
+                {useAgenticMode ? <Bot className="w-4 h-4" /> : <Send className="w-4 h-4" />}
               </Button>
             </div>
           </div>
