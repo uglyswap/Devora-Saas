@@ -1,27 +1,25 @@
 from fastapi import APIRouter, HTTPException, Depends, Request, status
 from motor.motor_asyncio import AsyncIOMotorClient
-import os
 from models import SubscriptionPlan, Invoice
 from auth import get_current_user
 from stripe_service import StripeService
+from config_service import ConfigService
 from datetime import datetime, timezone
 import logging
 import json
-from dotenv import load_dotenv
-from pathlib import Path
-
-# Load environment variables
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+from config import settings
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix='/billing', tags=['billing'])
 
-# MongoDB connection
-mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ.get('DB_NAME', 'devora_projects_db')]
+# MongoDB connection with centralized config
+client = AsyncIOMotorClient(settings.MONGO_URL)
+db = client[settings.DB_NAME]
+
+# Initialize services
+stripe_service = StripeService(db)
+config_service = ConfigService(db)
 
 @router.get('/plans', response_model=SubscriptionPlan)
 async def get_subscription_plans():
