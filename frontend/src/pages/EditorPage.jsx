@@ -706,24 +706,37 @@ ${file.content}
 
           {/* Editor & Preview Split */}
           <div className="flex-1 overflow-hidden">
-            <SplitPane split="vertical" minSize={300} defaultSize="50%">
-              {/* Code Editor */}
-              <div className="h-full flex flex-col border-r border-white/5">
-              <div className="p-2 border-b border-white/5 bg-black/20 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <Code2 className="w-4 h-4 text-emerald-400" />
-                  <span className="text-sm font-medium">Éditeur</span>
+            {showEditor ? (
+              <SplitPane split="vertical" minSize={300} defaultSize="50%">
+                {/* Code Editor */}
+                <div className="h-full flex flex-col border-r border-white/5">
+                <div className="p-2 border-b border-white/5 bg-black/20 flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <Code2 className="w-4 h-4 text-emerald-400" />
+                    <span className="text-sm font-medium">Éditeur</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      data-testid="toggle-editor-button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowEditor(false)}
+                      className="text-gray-400 hover:text-white"
+                      title="Masquer l'éditeur"
+                    >
+                      <PanelLeftClose className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      data-testid="copy-code-button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={copyCode}
+                      className="text-gray-400 hover:text-white"
+                    >
+                      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    </Button>
+                  </div>
                 </div>
-                <Button
-                  data-testid="copy-code-button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={copyCode}
-                  className="text-gray-400 hover:text-white"
-                >
-                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                </Button>
-              </div>
               <div className="flex-1">
                 <Editor
                   height="100%"
