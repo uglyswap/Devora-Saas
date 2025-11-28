@@ -107,3 +107,23 @@ async def update_user_status(
         raise HTTPException(status_code=404, detail='User not found')
     
     return {'message': f'User {"activated" if is_active else "deactivated"} successfully'}
+
+
+@router.get('/config', response_model=SystemConfig)
+async def get_system_config(current_admin: dict = Depends(get_current_admin_user)):
+    """Get system configuration (Stripe, Resend, billing settings)"""
+    config = await config_service.get_config()
+    return config
+
+@router.put('/config', response_model=SystemConfig)
+async def update_system_config(
+    config_update: SystemConfigUpdate,
+    current_admin: dict = Depends(get_current_admin_user)
+):
+    """Update system configuration"""
+    updated_config = await config_service.update_config(
+        config_update, 
+        current_admin['user_id']
+    )
+    logger.info(f'System config updated by admin {current_admin["email"]}')
+    return updated_config
