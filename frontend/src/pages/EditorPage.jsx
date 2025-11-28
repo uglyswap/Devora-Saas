@@ -143,7 +143,7 @@ const EditorPage = () => {
     }
   };
 
-  const sendMessage = async () => {
+  const sendMessage = async (useAgentic = true) => {
     if (!inputMessage.trim() || !apiKey) {
       toast.error('Veuillez entrer un message et configurer votre clé API');
       return;
@@ -155,23 +155,96 @@ const EditorPage = () => {
     setGenerating(true);
 
     try {
-      const conversationHistory = chatMessages.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      }));
+      if (useAgentic) {
+        // Use Agentic System
+        const agenticMessage = { 
+          role: 'assistant', 
+          content: '🤖 **Système Agentique Activé**\n\n' +
+                   '🔄 **Phase 1 : Planification**\nAnalyse des exigences...' 
+        };
+        setChatMessages(prev => [...prev, agenticMessage]);
 
-      const response = await axios.post(`${API}/generate/openrouter`, {
-        message: inputMessage,
-        model: selectedModel,
-        api_key: apiKey,
-        conversation_history: conversationHistory
-      });
+        const response = await axios.post(`${API}/generate/agentic`, {
+          message: inputMessage,
+          model: selectedModel,
+          api_key: apiKey,
+          current_files: project.files
+        });
 
-      const assistantMessage = { role: 'assistant', content: response.data.response };
-      setChatMessages(prev => [...prev, assistantMessage]);
+        if (response.data.success) {
+          // Build detailed progress message
+          let progressMsg = '🤖 **Système Agentique - Résultat**\n\n';
+          
+          const events = response.data.progress_events || [];
+          events.forEach(evt => {
+            const emoji = {
+              'planning': '📋',
+              'plan_complete': '✅',
+              'coding': '💻',
+              'code_complete': '✅',
+              'testing': '🧪',
+              'test_complete': '✅',
+              'reviewing': '🔍',
+              'review_complete': '✅',
+              'fixing': '🔧',
+              'complete': '🎉'
+            }[evt.event] || '•';
+            
+            progressMsg += `${emoji} ${evt.data.message}\n`;
+          });
+          
+          progressMsg += `\n✨ Génération terminée en ${response.data.iterations} itération(s) !`;
+          progressMsg += `\n📦 ${response.data.files?.length || 0} fichier(s) généré(s).`;
 
-      // Parse code from response
-      parseAndApplyCode(response.data.response);
+          setChatMessages(prev => {
+            const newMessages = [...prev];
+            newMessages[newMessages.length - 1] = {
+              role: 'assistant',
+              content: progressMsg
+            };
+            return newMessages;
+          });
+
+          // Apply generated files
+          if (response.data.files && response.data.files.length > 0) {
+            setProject(prev => {
+              const updatedFiles = [...prev.files];
+              
+              response.data.files.forEach(newFile => {
+                const existingIndex = updatedFiles.findIndex(f => f.name === newFile.name);
+                if (existingIndex >= 0) {
+                  updatedFiles[existingIndex] = newFile;
+                } else {
+                  updatedFiles.push(newFile);
+                }
+              });
+              
+              return { ...prev, files: updatedFiles };
+            });
+            
+            toast.success(`${response.data.files.length} fichier(s) généré(s) par le système agentique !`);
+          }
+        }
+      } else {
+        // Use Standard OpenRouter
+        const conversationHistory = chatMessages.map(msg => ({
+          role: msg.role,
+          content: msg.content
+        }));
+
+        const response = await axios.post(`${API}/generate/openrouter`, {
+          message: inputMessage,
+          model: selectedModel,
+          api_key: apiKey,
+          conversation_history: conversationHistory
+        });
+
+        const assistantMessage = { role: 'assistant', content: response.data.response };
+        setChatMessages(prev => [...prev, assistantMessage]);
+
+        // Parse code from response
+        parseAndApplyCode(response.data.response);
+      }
       
     } catch (error) {
       console.error('Error generating code:', error);
