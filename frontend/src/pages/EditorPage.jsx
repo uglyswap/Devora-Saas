@@ -34,6 +34,7 @@ const EditorPage = () => {
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showEditor, setShowEditor] = useState(true);
   
   // Project state
   const [project, setProject] = useState({
