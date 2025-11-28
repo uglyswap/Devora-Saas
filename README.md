@@ -220,7 +220,7 @@ MIT License - Utilisez librement pour vos projets personnels et commerciaux.
 
 Créé avec ❤️ en utilisant :
 - OpenRouter pour l'accès aux modèles IA
-- Emergent.sh pour l'infrastructure
+- Technologies open source
 - La communauté open source
 
 ---
