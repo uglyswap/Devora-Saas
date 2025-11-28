@@ -16,6 +16,7 @@ from config import settings
 from routes_auth import router as auth_router
 from routes_billing import router as billing_router
 from routes_admin import router as admin_router
+from routes_support import router as support_router
 from auth import get_current_user
 
 # MongoDB connection with centralized config
