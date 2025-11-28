@@ -1,17 +1,35 @@
 import stripe
-import os
 from typing import Optional
 import logging
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from config_service import ConfigService
 
 logger = logging.getLogger(__name__)
 
-# Initialize Stripe
-stripe.api_key = os.environ.get('STRIPE_SECRET_KEY', '')
 
 class StripeService:
     """Service for handling Stripe operations"""
     
-    PRICE_ID = os.environ.get('STRIPE_PRICE_ID', '')  # Price ID for 9.90€/month
+    def __init__(self, db: AsyncIOMotorDatabase):
+        self.db = db
+        self.config_service = ConfigService(db)
+        self._stripe_configured = False
+    
+    async def _ensure_stripe_configured(self):
+        """Configure Stripe avec les clés de la DB"""
+        if not self._stripe_configured:
+            api_key, webhook_secret, test_mode = await self.config_service.get_stripe_keys()
+            if api_key:
+                stripe.api_key = api_key
+                self._stripe_configured = True
+                logger.info(f"Stripe configured in {'test' if test_mode else 'live'} mode")
+            else:
+                logger.warning("Stripe API key not configured in system settings")
+    
+    async def get_webhook_secret(self) -> Optional[str]:
+        """Retourne le webhook secret depuis la config"""
+        _, webhook_secret, _ = await self.config_service.get_stripe_keys()
+        return webhook_secret
     
     @staticmethod
     async def create_customer(email: str, name: Optional[str] = None) -> str:
