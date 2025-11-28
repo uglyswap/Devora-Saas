@@ -133,11 +133,11 @@ const HomePage = () => {
           <Button
             data-testid="start-creating-button"
             size="lg"
-            onClick={() => navigate('/settings')}
+            onClick={() => navigate('/register')}
             className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white font-semibold px-10 py-6 text-lg rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-105"
           >
-            <Settings className="w-5 h-5 mr-2" />
-            Configurer maintenant
+            <Sparkles className="w-5 h-5 mr-2" />
+            Essai gratuit 7 jours
           </Button>
         </div>
       </main>
