@@ -321,8 +321,8 @@ When generating code:
                 "https://openrouter.ai/api/v1/chat/completions",
                 headers={
                     "Authorization": f"Bearer {request.api_key}",
-                    "HTTP-Referer": "http://localhost:3000",
-                    "X-Title": "Lovable Clone",
+                    "HTTP-Referer": os.environ.get('FRONTEND_URL', 'http://localhost:3000'),
+                    "X-Title": "Devora",
                     "Content-Type": "application/json"
                 },
                 json={
