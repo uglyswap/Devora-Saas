@@ -49,7 +49,7 @@ async def create_checkout_session(current_user: dict = Depends(get_current_user)
     stripe_customer_id = user.get('stripe_customer_id')
     if not stripe_customer_id:
         # Create Stripe customer if doesn't exist
-        stripe_customer_id = await StripeService.create_customer(
+        stripe_customer_id = await stripe_service.create_customer(
             email=user['email'],
             name=user.get('full_name')
         )
@@ -58,13 +58,16 @@ async def create_checkout_session(current_user: dict = Depends(get_current_user)
             {'$set': {'stripe_customer_id': stripe_customer_id}}
         )
     
+    # Get trial days from config
+    billing_settings = await config_service.get_billing_settings()
+    
     # Create checkout session
-    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
-    session = await StripeService.create_checkout_session(
+    session = await stripe_service.create_checkout_session(
         customer_id=stripe_customer_id,
-        success_url=f"{frontend_url}/billing/success",
-        cancel_url=f"{frontend_url}/billing/cancel",
-        user_id=user['id']
+        success_url=f"{settings.FRONTEND_URL}/billing/success",
+        cancel_url=f"{settings.FRONTEND_URL}/billing/cancel",
+        user_id=user['id'],
+        trial_days=billing_settings["free_trial_days"]
     )
     
     return session
