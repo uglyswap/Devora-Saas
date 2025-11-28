@@ -11,6 +11,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Billing from './pages/Billing';
 import AdminPanel from './pages/AdminPanel';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Support from './pages/Support';
 import { Toaster } from './components/ui/sonner';
 import './App.css';
 
