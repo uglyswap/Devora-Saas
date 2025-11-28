@@ -466,6 +466,45 @@ async def deploy_to_vercel(request: DeployVercelRequest):
         logging.error(f"Vercel deployment error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Agentic Code Generation
+@api_router.post("/generate/agentic")
+async def generate_with_agentic_system(request: AgenticRequest):
+    """Generate code using the agentic system"""
+    try:
+        # Create orchestrator
+        orchestrator = OrchestratorAgent(
+            api_key=request.api_key,
+            model=request.model
+        )
+        
+        # Store progress events
+        progress_events = []
+        
+        async def progress_callback(event: str, data: dict):
+            progress_events.append({
+                "event": event,
+                "data": data,
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            })
+        
+        orchestrator.set_progress_callback(progress_callback)
+        
+        # Execute agentic workflow
+        result = await orchestrator.execute(
+            user_request=request.message,
+            current_files=[f.model_dump() for f in request.current_files]
+        )
+        
+        # Return result with progress events
+        return {
+            **result,
+            "progress_events": progress_events
+        }
+        
+    except Exception as e:
+        logging.error(f"Agentic generation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Health check
 @api_router.get("/")
 async def root():
