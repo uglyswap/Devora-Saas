@@ -145,7 +145,7 @@ const HomePage = () => {
       {/* Footer */}
       <footer className="relative z-10 mt-32 py-12 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6 text-center text-gray-500">
-          <p>Créé avec ❤️ • 100% Gratuit & Open Source</p>
+          <p>Créé avec ❤️ • 100% Open Source</p>
         </div>
       </footer>
     </div>
