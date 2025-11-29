@@ -243,6 +243,85 @@ const SettingsPage = () => {
               {saving ? 'Sauvegarde...' : 'Sauvegarder les paramètres'}
             </Button>
           </div>
+
+          {/* RGPD Section */}
+          <Card className="mt-8 border-red-500/20 bg-red-500/5">
+            <CardHeader>
+              <CardTitle className="text-red-400">⚠️ Zone de Danger</CardTitle>
+              <CardDescription className="text-red-200">
+                Actions irréversibles sur votre compte
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Export Data */}
+              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                <h3 className="text-white font-semibold mb-2">📥 Exporter mes données (RGPD)</h3>
+                <p className="text-sm text-gray-400 mb-3">
+                  Téléchargez toutes vos données personnelles au format JSON
+                </p>
+                <Button
+                  onClick={async () => {
+                    try {
+                      const token = localStorage.getItem('token');
+                      const response = await fetch(`${API}/auth/export-data`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                      });
+                      if (response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `devora-data-export-${new Date().toISOString().split('T')[0]}.json`;
+                        a.click();
+                        toast.success('✅ Données exportées !');
+                      } else {
+                        toast.error('❌ Erreur lors de l\\'export');
+                      }
+                    } catch (error) {
+                      toast.error('❌ Erreur lors de l\\'export');
+                    }
+                  }}
+                  className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
+                >
+                  Exporter mes données
+                </Button>
+              </div>
+
+              {/* Delete Account */}
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                <h3 className="text-red-400 font-semibold mb-2">🗑️ Supprimer mon compte</h3>
+                <p className="text-sm text-red-200 mb-3">
+                  Cette action est définitive et supprimera toutes vos données
+                </p>
+                <Button
+                  onClick={async () => {
+                    if (!window.confirm('⚠️ Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+                      return;
+                    }
+                    try {
+                      const token = localStorage.getItem('token');
+                      const response = await fetch(`${API}/auth/delete-account`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                      });
+                      if (response.ok) {
+                        toast.success('✅ Compte supprimé');
+                        localStorage.removeItem('token');
+                        navigate('/');
+                      } else {
+                        toast.error('❌ Erreur lors de la suppression');
+                      }
+                    } catch (error) {
+                      toast.error('❌ Erreur lors de la suppression');
+                    }
+                  }}
+                  className="bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                >
+                  Supprimer mon compte
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>
