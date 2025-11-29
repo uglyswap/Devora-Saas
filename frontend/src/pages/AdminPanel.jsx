@@ -174,7 +174,7 @@ const AdminPanel = () => {
               <h3 className="text-lg font-semibold text-white mb-4">💳 Stripe</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Mode Test
                   </label>
                   <label className="flex items-center">
@@ -190,7 +190,7 @@ const AdminPanel = () => {
                   </label>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     API Key {config.stripe_test_mode ? '(Test)' : '(Live)'}
                   </label>
                   <input
@@ -202,7 +202,7 @@ const AdminPanel = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Webhook Secret
                   </label>
                   <input
@@ -221,7 +221,7 @@ const AdminPanel = () => {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">📧 Resend (Email)</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     API Key
                   </label>
                   <input
@@ -233,7 +233,7 @@ const AdminPanel = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Email From
                   </label>
                   <input
@@ -251,7 +251,7 @@ const AdminPanel = () => {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">💰 Paramètres de facturation</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Prix de l'abonnement (€ TTC)
                   </label>
                   <input
@@ -263,7 +263,7 @@ const AdminPanel = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Durée de l'essai gratuit (jours)
                   </label>
                   <input
@@ -274,7 +274,7 @@ const AdminPanel = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Nombre max d'échecs de paiement avant blocage
                   </label>
                   <input
