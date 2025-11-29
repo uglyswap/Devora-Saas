@@ -24,6 +24,46 @@ db = client[settings.DB_NAME]
 config_service = ConfigService(db)
 stripe_service = StripeService(db)
 
+
+# Special endpoint to initialize first admin (only works if no admins exist)
+@router.post('/init-first-admin')
+async def init_first_admin(email: str):
+    """Initialize the first admin - only works if no admins exist in the database"""
+    
+    # Check if any admin already exists
+    existing_admin = await db.users.find_one({'is_admin': True}, {'_id': 0})
+    if existing_admin:
+        raise HTTPException(
+            status_code=403,
+            detail='An admin already exists. Use the admin panel to promote users.'
+        )
+    
+    # Find the user by email
+    user = await db.users.find_one({'email': email}, {'_id': 0})
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    
+    # Promote to admin
+    result = await db.users.update_one(
+        {'email': email},
+        {'$set': {
+            'is_admin': True,
+            'subscription_status': 'active',
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=500, detail='Failed to promote user to admin')
+    
+    logger.info(f'First admin initialized: {email}')
+    
+    return {
+        'message': f'User {email} successfully promoted to first admin',
+        'email': email
+    }
+
+
 @router.get('/stats', response_model=AdminStats)
 async def get_admin_stats(current_admin: dict = Depends(get_current_admin_user)):
     """Get admin dashboard statistics"""
