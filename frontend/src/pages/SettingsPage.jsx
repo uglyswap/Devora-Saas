@@ -73,26 +73,12 @@ const SettingsPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0a0b] via-[#111113] to-[#0a0a0b]">
-      {/* Header */}
-      <header className="border-b border-white/5 bg-black/20 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Button
-              data-testid="back-button"
-              variant="ghost"
-              onClick={() => navigate('/')}
-              className="text-gray-400 hover:text-white"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Retour
-            </Button>
-            <h1 className="text-2xl font-bold">Paramètres</h1>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation />
 
       {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-6 py-12">
+      <main className="max-w-5xl mx-auto px-6 py-8">
+        <h1 className="text-3xl font-bold text-white mb-8">Paramètres</h1>
         <div className="space-y-6">
           {/* OpenRouter API Key */}
           <Card data-testid="openrouter-settings-card" className="bg-gradient-to-br from-white/5 to-white/[0.02] border-white/10">
