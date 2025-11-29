@@ -186,6 +186,34 @@ const AdminPanel = () => {
     return "0.00"; // Placeholder
   };
 
+  const loadUserProjects = async (userId) => {
+    setLoadingProjects(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${userId}/projects`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUserProjects(data.projects);
+      } else {
+        toast.error('❌ Erreur lors du chargement des projets');
+        setUserProjects([]);
+      }
+    } catch (error) {
+      console.error('Error loading user projects:', error);
+      toast.error('❌ Erreur lors du chargement des projets');
+      setUserProjects([]);
+    }
+    setLoadingProjects(false);
+  };
+
+  const openProjectInEditor = (projectId) => {
+    // Open project in editor in new tab
+    window.open(`/editor/${projectId}`, '_blank');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0a0a0b] via-[#111113] to-[#0a0a0b] flex items-center justify-center">
