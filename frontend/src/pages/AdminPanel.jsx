@@ -616,7 +616,12 @@ const AdminPanel = () => {
                   Projets
                 </button>
                 <button
-                  onClick={() => setActiveTab('billing')}
+                  onClick={() => {
+                    setActiveTab('billing');
+                    if (selectedUser) {
+                      loadUserInvoices(selectedUser.id);
+                    }
+                  }}
                   className={`px-4 py-3 text-sm font-medium transition-colors ${
                     activeTab === 'billing'
                       ? 'text-emerald-400 border-b-2 border-emerald-400'
