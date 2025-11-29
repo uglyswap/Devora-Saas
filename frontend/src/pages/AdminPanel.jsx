@@ -310,18 +310,18 @@ const AdminPanel = () => {
               </div>
             </div>
 
-            {/* Deuxième ligne - Revenue */}
+            {/* Deuxième ligne - Revenu */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 p-6 rounded-lg">
-                <h3 className="text-sm font-medium text-blue-300">💰 Revenue Total Cumulé</h3>
+                <h3 className="text-sm font-medium text-blue-300">💰 Revenu Total Cumulé</h3>
                 <p className="text-3xl font-bold text-blue-400 mt-2">{stats.total_revenue.toFixed(2)}€</p>
               </div>
               <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 border border-emerald-500/30 p-6 rounded-lg">
-                <h3 className="text-sm font-medium text-emerald-300">📈 Revenue Mois en Cours</h3>
+                <h3 className="text-sm font-medium text-emerald-300">📈 Revenu Mois en Cours</h3>
                 <p className="text-3xl font-bold text-emerald-400 mt-2">{stats.revenue_current_month.toFixed(2)}€</p>
               </div>
               <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30 p-6 rounded-lg">
-                <h3 className="text-sm font-medium text-purple-300">📊 Revenue Mois Dernier</h3>
+                <h3 className="text-sm font-medium text-purple-300">📊 Revenu Mois Dernier</h3>
                 <p className="text-3xl font-bold text-purple-400 mt-2">{stats.revenue_last_month.toFixed(2)}€</p>
               </div>
             </div>
