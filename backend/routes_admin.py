@@ -127,3 +127,71 @@ async def update_system_config(
     )
     logger.info(f'System config updated by admin {current_admin["email"]}')
     return updated_config
+
+@router.post('/users/{user_id}/promote-admin')
+async def promote_to_admin(
+    user_id: str,
+    current_admin: dict = Depends(get_current_admin_user)
+):
+    """Promote a user to admin status"""
+    user = await db.users.find_one({'id': user_id}, {'_id': 0})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    
+    if user.get('is_admin'):
+        return {'message': 'User is already an admin', 'user': user['email']}
+    
+    result = await db.users.update_one(
+        {'id': user_id},
+        {'$set': {'is_admin': True, 'updated_at': datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=500, detail='Failed to promote user')
+    
+    logger.info(f'User {user["email"]} promoted to admin by {current_admin["email"]}')
+    
+    return {
+        'message': f'User {user["email"]} successfully promoted to admin',
+        'user_id': user_id,
+        'email': user['email']
+    }
+
+@router.delete('/users/{user_id}/revoke-admin')
+async def revoke_admin(
+    user_id: str,
+    current_admin: dict = Depends(get_current_admin_user)
+):
+    """Revoke admin status from a user"""
+    user = await db.users.find_one({'id': user_id}, {'_id': 0})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    
+    if not user.get('is_admin'):
+        return {'message': 'User is not an admin', 'user': user['email']}
+    
+    # Prevent revoking own admin status
+    if user_id == current_admin['user_id']:
+        raise HTTPException(
+            status_code=400, 
+            detail='Cannot revoke your own admin status'
+        )
+    
+    result = await db.users.update_one(
+        {'id': user_id},
+        {'$set': {'is_admin': False, 'updated_at': datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=500, detail='Failed to revoke admin status')
+    
+    logger.info(f'Admin status revoked from {user["email"]} by {current_admin["email"]}')
+    
+    return {
+        'message': f'Admin status revoked from {user["email"]}',
+        'user_id': user_id,
+        'email': user['email']
+    }
+
