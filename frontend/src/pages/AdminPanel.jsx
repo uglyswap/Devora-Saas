@@ -143,6 +143,23 @@ const AdminPanel = () => {
           </div>
         )}
 
+        {/* User Management */}
+        <div className="bg-white rounded-lg shadow p-8 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">👥 Gestion des Utilisateurs</h2>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 className="font-semibold text-blue-900 mb-2">Promouvoir un utilisateur en admin</h3>
+            <p className="text-sm text-blue-700 mb-4">
+              Pour promouvoir un utilisateur existant en admin, utilisez l'API :
+            </p>
+            <code className="block bg-white p-3 rounded border border-blue-300 text-sm text-gray-800 overflow-x-auto">
+              POST /api/admin/users/&#123;user_id&#125;/promote-admin
+            </code>
+            <p className="text-xs text-blue-600 mt-2">
+              Vous pouvez aussi utiliser le script : <code className="bg-white px-2 py-1 rounded">python /app/backend/create_admin.py</code>
+            </p>
+          </div>
+        </div>
+
         {/* Configuration System */}
         {config && (
           <div className="bg-white rounded-lg shadow p-8">
