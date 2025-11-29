@@ -68,10 +68,14 @@ class Invoice(BaseModel):
 class AdminStats(BaseModel):
     total_users: int
     active_subscriptions: int
-    total_revenue: float
+    total_revenue: float  # Revenue cumulé total
+    revenue_last_month: float  # Revenue du mois dernier
+    revenue_current_month: float  # Revenue du mois en cours
     total_projects: int
     new_users_this_month: int
     churn_rate: float
+    cancellations_current_month: int  # Abonnements annulés ce mois
+    cancellations_last_month: int  # Abonnements annulés le mois dernier
 
 
 class SystemConfig(BaseModel):
