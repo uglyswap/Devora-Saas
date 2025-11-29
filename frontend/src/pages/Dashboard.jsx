@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
-import { Plus, FileCode, Trash2, ExternalLink, Github, Globe, ArrowLeft, Calendar, Loader2 } from 'lucide-react';
+import Navigation from '../components/Navigation';
+import { Plus, FileCode, Trash2, ExternalLink, Github, Globe, Calendar, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'sonner';
 
