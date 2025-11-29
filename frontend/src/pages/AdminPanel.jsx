@@ -886,12 +886,67 @@ const AdminPanel = () => {
 
                       {/* Payment History */}
                       <div className="mt-6">
-                        <h4 className="text-sm font-medium text-white mb-3">Historique des paiements</h4>
-                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-                          <p className="text-sm text-blue-200">
-                            💳 Aucun paiement enregistré pour cet utilisateur
-                          </p>
+                        <div className="flex justify-between items-center mb-3">
+                          <h4 className="text-sm font-medium text-white">Historique des paiements</h4>
+                          {totalPaidUser > 0 && (
+                            <span className="text-emerald-400 font-bold">
+                              Total payé : {totalPaidUser.toFixed(2)}€
+                            </span>
+                          )}
                         </div>
+                        
+                        {loadingInvoices ? (
+                          <div className="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
+                            <span className="text-gray-400">Chargement...</span>
+                          </div>
+                        ) : userInvoices.length === 0 ? (
+                          <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                            <p className="text-sm text-blue-200">
+                              💳 Aucun paiement enregistré pour cet utilisateur
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            {userInvoices.map((invoice, idx) => (
+                              <div
+                                key={idx}
+                                className="bg-white/5 border border-white/10 rounded-lg p-3 flex justify-between items-center"
+                              >
+                                <div>
+                                  <p className="text-white font-medium">
+                                    {invoice.amount.toFixed(2)}€
+                                  </p>
+                                  <p className="text-xs text-gray-400">
+                                    {new Date(invoice.created_at).toLocaleDateString('fr-FR', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric'
+                                    })}
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <span className={`px-2 py-1 rounded-full text-xs ${
+                                    invoice.status === 'paid' 
+                                      ? 'bg-green-500/20 text-green-400'
+                                      : 'bg-orange-500/20 text-orange-400'
+                                  }`}>
+                                    {invoice.status}
+                                  </span>
+                                  {invoice.invoice_pdf && (
+                                    <a
+                                      href={invoice.invoice_pdf}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-400 hover:text-blue-300 text-xs"
+                                    >
+                                      📄 PDF
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
