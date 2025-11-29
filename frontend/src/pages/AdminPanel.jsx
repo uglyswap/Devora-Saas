@@ -171,7 +171,7 @@ const AdminPanel = () => {
             
             {/* Stripe Configuration */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">💳 Stripe</h3>
+              <h3 className="text-lg font-semibold text-white mb-4">💳 Stripe</h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
