@@ -128,15 +128,15 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Features Grid */}
+        {/* INTEREST - Features Grid */}
         <div className="grid md:grid-cols-3 gap-8 mt-32">
           <div className="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-emerald-500/30 transition-all hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/10">
             <div className="bg-emerald-500/10 w-14 h-14 rounded-xl flex items-center justify-center mb-6">
               <Code2 className="w-7 h-7 text-emerald-400" />
             </div>
-            <h3 className="text-2xl font-bold mb-4">Génération de code IA</h3>
+            <h3 className="text-2xl font-bold mb-4">Génération de code IA Agentique</h3>
             <p className="text-gray-400 leading-relaxed">
-              Utilisez tous les modèles disponibles sur OpenRouter pour générer du code de qualité professionnelle.
+              Système agentic qui comprend vos besoins et génère automatiquement du code professionnel. L'IA prend les décisions et crée pour vous.
             </p>
           </div>
 
