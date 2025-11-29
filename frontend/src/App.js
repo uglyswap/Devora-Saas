@@ -10,7 +10,7 @@ import SettingsPage from './pages/SettingsPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Billing from './pages/Billing';
-import AdminPanel from './pages/AdminPanel';
+import AdminPanelAdvanced from './pages/AdminPanelAdvanced';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Support from './pages/Support';
