@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import Navigation from '../components/Navigation';
 import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
-import { ArrowLeft, CreditCard, Calendar, Download, Check, Sparkles, Loader2, ExternalLink } from 'lucide-react';
+import { CreditCard, Calendar, Download, Check, Sparkles, Loader2, ExternalLink } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'sonner';
 
