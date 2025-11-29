@@ -185,7 +185,18 @@ const HomePage = () => {
       <footer className="relative z-10 mt-32 py-12 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-gray-500">Créé avec ❤️ • 100% Open Source</p>
+            <p className="text-gray-500">
+              Créé avec ❤️ • Version Open Source Gratuite disponible sur{' '}
+              <a 
+                href="https://github.com/uglyswap/Devora"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors"
+              >
+                Github
+              </a>
+              {' '}!
+            </p>
             <div className="flex gap-6 text-sm text-gray-400">
               <button
                 onClick={() => navigate('/legal/terms')}
