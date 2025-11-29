@@ -28,15 +28,58 @@ async def get_admin_stats(current_admin: dict = Depends(get_current_admin_user))
     # Active subscriptions
     active_subscriptions = await db.users.count_documents({'subscription_status': 'active'})
     
-    # Total revenue (from invoices)
-    invoices = await db.invoices.find({'status': 'paid'}).to_list(None)
-    total_revenue = sum(inv.get('amount', 0) for inv in invoices)
-    
     # Total projects
     total_projects = await db.projects.count_documents({})
     
+    # Calculate date ranges
+    now = datetime.now(timezone.utc)
+    start_of_current_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    
+    # Start of last month
+    if now.month == 1:
+        start_of_last_month = now.replace(year=now.year - 1, month=12, day=1, hour=0, minute=0, second=0, microsecond=0)
+    else:
+        start_of_last_month = now.replace(month=now.month - 1, day=1, hour=0, minute=0, second=0, microsecond=0)
+    
+    # Revenue calculations
+    all_invoices = await db.invoices.find({'status': 'paid'}, {'_id': 0}).to_list(None)
+    
+    # Total revenue (cumulé)
+    total_revenue = sum(inv.get('amount', 0) for inv in all_invoices)
+    
+    # Revenue du mois en cours
+    revenue_current_month = 0
+    for inv in all_invoices:
+        created_at_str = inv.get('created_at')
+        if created_at_str:
+            try:
+                if isinstance(created_at_str, str):
+                    inv_date = datetime.fromisoformat(created_at_str.replace('Z', '+00:00'))
+                else:
+                    inv_date = created_at_str
+                
+                if inv_date >= start_of_current_month:
+                    revenue_current_month += inv.get('amount', 0)
+            except:
+                pass
+    
+    # Revenue du mois dernier
+    revenue_last_month = 0
+    for inv in all_invoices:
+        created_at_str = inv.get('created_at')
+        if created_at_str:
+            try:
+                if isinstance(created_at_str, str):
+                    inv_date = datetime.fromisoformat(created_at_str.replace('Z', '+00:00'))
+                else:
+                    inv_date = created_at_str
+                
+                if start_of_last_month <= inv_date < start_of_current_month:
+                    revenue_last_month += inv.get('amount', 0)
+            except:
+                pass
+    
     # New users this month
-    start_of_month = datetime.now(timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     new_users_pipeline = [
         {
             '$addFields': {
@@ -50,7 +93,7 @@ async def get_admin_stats(current_admin: dict = Depends(get_current_admin_user))
         },
         {
             '$match': {
-                'created_at_date': {'$gte': start_of_month}
+                'created_at_date': {'$gte': start_of_current_month}
             }
         },
         {'$count': 'count'}
@@ -58,19 +101,44 @@ async def get_admin_stats(current_admin: dict = Depends(get_current_admin_user))
     new_users_result = await db.users.aggregate(new_users_pipeline).to_list(1)
     new_users_this_month = new_users_result[0]['count'] if new_users_result else 0
     
-    # Churn rate (simplified calculation)
-    canceled_this_month = await db.users.count_documents({
-        'subscription_status': 'canceled'
-    })
-    churn_rate = (canceled_this_month / total_users * 100) if total_users > 0 else 0.0
+    # Cancellations - chercher dans les users avec subscription_status = 'canceled'
+    # et vérifier quand l'annulation a eu lieu (on peut utiliser updated_at ou créer un champ canceled_at)
+    # Pour l'instant, on compte tous les canceled comme approximation
+    all_canceled = await db.users.find({'subscription_status': 'canceled'}, {'_id': 0}).to_list(None)
+    
+    cancellations_current_month = 0
+    cancellations_last_month = 0
+    
+    for user in all_canceled:
+        updated_at_str = user.get('updated_at')
+        if updated_at_str:
+            try:
+                if isinstance(updated_at_str, str):
+                    updated_date = datetime.fromisoformat(updated_at_str.replace('Z', '+00:00'))
+                else:
+                    updated_date = updated_at_str
+                
+                if updated_date >= start_of_current_month:
+                    cancellations_current_month += 1
+                elif start_of_last_month <= updated_date < start_of_current_month:
+                    cancellations_last_month += 1
+            except:
+                pass
+    
+    # Churn rate (basé sur le mois en cours)
+    churn_rate = (cancellations_current_month / total_users * 100) if total_users > 0 else 0.0
     
     return AdminStats(
         total_users=total_users,
         active_subscriptions=active_subscriptions,
-        total_revenue=total_revenue,
+        total_revenue=round(total_revenue, 2),
+        revenue_last_month=round(revenue_last_month, 2),
+        revenue_current_month=round(revenue_current_month, 2),
         total_projects=total_projects,
         new_users_this_month=new_users_this_month,
-        churn_rate=round(churn_rate, 2)
+        churn_rate=round(churn_rate, 2),
+        cancellations_current_month=cancellations_current_month,
+        cancellations_last_month=cancellations_last_month
     )
 
 @router.get('/users')
