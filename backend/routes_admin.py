@@ -6,6 +6,10 @@ from config_service import ConfigService
 from stripe_service import StripeService
 from datetime import datetime, timezone, timedelta
 import logging
+from uuid import uuid4
+from pydantic import BaseModel, EmailStr
+from auth import get_password_hash
+
 from config import settings
 
 logger = logging.getLogger(__name__)
