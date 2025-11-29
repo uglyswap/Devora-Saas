@@ -119,7 +119,7 @@ const AdminPanel = () => {
     }
   };
 
-  // Update user status
+  // Update user subscription status
   const updateUserStatus = async () => {
     if (!editingUser || !newStatus) {
       toast.error('Veuillez sélectionner un statut');
@@ -129,7 +129,7 @@ const AdminPanel = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${editingUser.id}/status`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${editingUser.id}/subscription`,
         {
           method: 'PATCH',
           headers: {
