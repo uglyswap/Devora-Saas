@@ -668,14 +668,82 @@ const AdminPanel = () => {
 
                 {activeTab === 'projects' && (
                   <div className="space-y-4">
-                    <p className="text-gray-400">
-                      Liste des projets de {selectedUser.email}
-                    </p>
-                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-                      <p className="text-sm text-blue-200">
-                        📋 Fonctionnalité en cours d'implémentation : Affichage et édition des projets utilisateur
-                      </p>
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold text-white">
+                        Projets de {selectedUser.email}
+                      </h3>
+                      {loadingProjects && (
+                        <span className="text-sm text-gray-400">Chargement...</span>
+                      )}
                     </div>
+
+                    {!loadingProjects && userProjects.length === 0 ? (
+                      <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6 text-center">
+                        <FolderOpen className="w-12 h-12 text-blue-400 mx-auto mb-3" />
+                        <p className="text-blue-200">
+                          Aucun projet créé par cet utilisateur
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {userProjects.map((project) => (
+                          <div
+                            key={project.id}
+                            className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-colors"
+                          >
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <h4 className="text-white font-semibold mb-1">
+                                  {project.name || 'Projet sans nom'}
+                                </h4>
+                                <div className="flex gap-4 text-sm text-gray-400 mb-2">
+                                  <span>
+                                    📅 Créé : {new Date(project.created_at).toLocaleDateString('fr-FR')}
+                                  </span>
+                                  {project.updated_at && (
+                                    <span>
+                                      🔄 Modifié : {new Date(project.updated_at).toLocaleDateString('fr-FR')}
+                                    </span>
+                                  )}
+                                </div>
+                                {project.description && (
+                                  <p className="text-sm text-gray-300 mb-2">
+                                    {project.description}
+                                  </p>
+                                )}
+                                <div className="flex gap-2 flex-wrap">
+                                  {project.github_repo_url && (
+                                    <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">
+                                      🔗 GitHub
+                                    </span>
+                                  )}
+                                  {project.vercel_deployment_url && (
+                                    <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded">
+                                      🚀 Vercel
+                                    </span>
+                                  )}
+                                  {project.files && (
+                                    <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded">
+                                      📄 {Object.keys(project.files).length} fichier(s)
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex gap-2 ml-4">
+                                <Button
+                                  size="sm"
+                                  onClick={() => openProjectInEditor(project.id)}
+                                  className="bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
+                                >
+                                  <FolderOpen className="w-4 h-4 mr-1" />
+                                  Ouvrir
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
