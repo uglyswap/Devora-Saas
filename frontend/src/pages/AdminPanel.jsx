@@ -155,11 +155,11 @@ const AdminPanel = () => {
             <p className="text-sm text-blue-200 mb-4">
               Pour promouvoir un utilisateur existant en admin, utilisez l'API :
             </p>
-            <code className="block bg-white p-3 rounded border border-blue-300 text-sm text-gray-800 overflow-x-auto">
+            <code className="block bg-black/30 p-3 rounded border border-blue-500/30 text-sm text-blue-100 overflow-x-auto">
               POST /api/admin/users/&#123;user_id&#125;/promote-admin
             </code>
-            <p className="text-xs text-blue-600 mt-2">
-              Vous pouvez aussi utiliser le script : <code className="bg-white px-2 py-1 rounded">python /app/backend/create_admin.py</code>
+            <p className="text-xs text-blue-300 mt-2">
+              Vous pouvez aussi utiliser le script : <code className="bg-black/30 px-2 py-1 rounded border border-blue-500/20">python /app/backend/create_admin.py</code>
             </p>
           </div>
         </div>
