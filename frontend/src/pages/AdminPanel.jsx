@@ -166,8 +166,8 @@ const AdminPanel = () => {
 
         {/* Configuration System */}
         {config && (
-          <div className="bg-white rounded-lg shadow p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">⚙️ Configuration Système</h2>
+          <div className="bg-white/5 border border-white/10 rounded-lg p-8">
+            <h2 className="text-2xl font-bold text-white mb-6">⚙️ Configuration Système</h2>
             
             {/* Stripe Configuration */}
             <div className="mb-8">
