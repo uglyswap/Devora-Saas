@@ -195,3 +195,106 @@ async def revoke_admin(
         'email': user['email']
     }
 
+
+@router.get('/users/{user_id}/projects')
+async def get_user_projects(
+    user_id: str,
+    current_admin: dict = Depends(get_current_admin_user)
+):
+    """Get all projects for a specific user"""
+    projects = await db.projects.find({'user_id': user_id}, {'_id': 0}).to_list(1000)
+    return {'projects': projects, 'count': len(projects)}
+
+@router.get('/users/{user_id}/invoices')
+async def get_user_invoices(
+    user_id: str,
+    current_admin: dict = Depends(get_current_admin_user)
+):
+    """Get all invoices for a specific user"""
+    invoices = await db.invoices.find({'user_id': user_id}, {'_id': 0}).to_list(1000)
+    
+    # Calculate total paid
+    total_paid = sum(inv.get('amount', 0) for inv in invoices if inv.get('status') == 'paid')
+    
+    return {
+        'invoices': invoices,
+        'count': len(invoices),
+        'total_paid': total_paid
+    }
+
+@router.post('/users/{user_id}/gift-months')
+async def gift_free_months(
+    user_id: str,
+    months: int,
+    current_admin: dict = Depends(get_current_admin_user)
+):
+    """Gift free months to a user"""
+    if months < 1 or months > 12:
+        raise HTTPException(status_code=400, detail='Months must be between 1 and 12')
+    
+    user = await db.users.find_one({'id': user_id}, {'_id': 0})
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    
+    # Calculate new end date
+    from dateutil.relativedelta import relativedelta
+    current_end = user.get('current_period_end')
+    
+    if current_end:
+        try:
+            current_date = datetime.fromisoformat(current_end)
+        except:
+            current_date = datetime.now(timezone.utc)
+    else:
+        current_date = datetime.now(timezone.utc)
+    
+    new_end_date = current_date + relativedelta(months=months)
+    
+    await db.users.update_one(
+        {'id': user_id},
+        {
+            '$set': {
+                'current_period_end': new_end_date.isoformat(),
+                'subscription_status': 'active',
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    logger.info(f'Admin {current_admin["email"]} gifted {months} month(s) to {user["email"]}')
+    
+    return {
+        'message': f'Successfully gifted {months} month(s)',
+        'new_end_date': new_end_date.isoformat()
+    }
+
+@router.post('/users/{user_id}/toggle-billing')
+async def toggle_billing(
+    user_id: str,
+    enable: bool,
+    current_admin: dict = Depends(get_current_admin_user)
+):
+    """Enable or disable billing for a user"""
+    user = await db.users.find_one({'id': user_id}, {'_id': 0})
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    
+    # Add a flag to indicate billing exemption
+    await db.users.update_one(
+        {'id': user_id},
+        {
+            '$set': {
+                'billing_exempt': not enable,
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    logger.info(f'Admin {current_admin["email"]} {"enabled" if enable else "disabled"} billing for {user["email"]}')
+    
+    return {
+        'message': f'Billing {"enabled" if enable else "disabled"} for user',
+        'billing_exempt': not enable
+    }
+
+
