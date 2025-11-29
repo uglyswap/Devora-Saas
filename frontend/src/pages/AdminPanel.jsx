@@ -124,25 +124,25 @@ const AdminPanel = () => {
               <h3 className="text-sm font-medium text-gray-500">Utilisateurs totaux</h3>
               <p className="text-3xl font-bold text-gray-900 mt-2">{stats.total_users}</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-sm font-medium text-gray-500">Abonnements actifs</h3>
-              <p className="text-3xl font-bold text-green-600 mt-2">{stats.active_subscriptions}</p>
+            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-400">Abonnements actifs</h3>
+              <p className="text-3xl font-bold text-green-400 mt-2">{stats.active_subscriptions}</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-sm font-medium text-gray-500">Revenue total</h3>
-              <p className="text-3xl font-bold text-blue-600 mt-2">{stats.total_revenue.toFixed(2)}€</p>
+            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-400">Revenue total</h3>
+              <p className="text-3xl font-bold text-blue-400 mt-2">{stats.total_revenue.toFixed(2)}€</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-sm font-medium text-gray-500">Projets totaux</h3>
-              <p className="text-3xl font-bold text-purple-600 mt-2">{stats.total_projects}</p>
+            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-400">Projets totaux</h3>
+              <p className="text-3xl font-bold text-purple-400 mt-2">{stats.total_projects}</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-sm font-medium text-gray-500">Nouveaux utilisateurs (ce mois)</h3>
-              <p className="text-3xl font-bold text-orange-600 mt-2">{stats.new_users_this_month}</p>
+            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-400">Nouveaux utilisateurs (ce mois)</h3>
+              <p className="text-3xl font-bold text-orange-400 mt-2">{stats.new_users_this_month}</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-sm font-medium text-gray-500">Taux de churn</h3>
-              <p className="text-3xl font-bold text-red-600 mt-2">{stats.churn_rate}%</p>
+            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+              <h3 className="text-sm font-medium text-gray-400">Taux de churn</h3>
+              <p className="text-3xl font-bold text-red-400 mt-2">{stats.churn_rate}%</p>
             </div>
           </div>
         )}
