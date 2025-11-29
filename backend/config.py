@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     DB_NAME: str = "devora_db"
     
     # JWT Authentication
-    SECRET_KEY: str = "your-secret-key-change-in-production"
+    SECRET_KEY: str  # Must be set in environment variables
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     
     # App
     APP_NAME: str = "Devora"
-    FRONTEND_URL: str = "https://devora.fun"
+    FRONTEND_URL: str  # Must be set in environment variables
     
     # Emergent LLM
     EMERGENT_LLM_KEY: Optional[str] = None
