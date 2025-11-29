@@ -19,6 +19,8 @@ const AdminPanel = () => {
   const [config, setConfig] = useState(null);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [userProjects, setUserProjects] = useState([]);
+  const [loadingProjects, setLoadingProjects] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [message, setMessage] = useState(null);
   const [activeTab, setActiveTab] = useState('info');
