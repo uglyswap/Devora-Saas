@@ -278,7 +278,7 @@ Le backend Devora SaaS est **entièrement fonctionnel** et prêt pour l'ajout de
 ### Résultats des Tests E2E Frontend (7/7 Tests Réussis)
 
 #### ✅ 1. **Page d'accueil** - SUCCÈS
-- **URL**: https://codecreator-9.preview.emergentagent.com
+- **URL**: https://devora-agent.preview.emergentagent.com
 - **Résultat**: Page se charge correctement, titre "Devora - Générateur de Code IA"
 - **Navigation**: Bouton "Essai gratuit 7 jours" fonctionne → redirection vers /register
 - **UI**: Logo Devora, CTA principal, sections features visibles
@@ -326,8 +326,8 @@ Le backend Devora SaaS est **entièrement fonctionnel** et prêt pour l'ajout de
 - **Couverture**: Toutes les pages principales testées
 
 ### Notes Techniques
-- **URL Frontend**: https://codecreator-9.preview.emergentagent.com (depuis .env)
-- **Backend API**: https://codecreator-9.preview.emergentagent.com/api
+- **URL Frontend**: https://devora-agent.preview.emergentagent.com (depuis .env)
+- **Backend API**: https://devora-agent.preview.emergentagent.com/api
 - **Authentification**: JWT fonctionnel, sessions maintenues
 - **UI/UX**: Design cohérent, responsive, animations fluides
 - **Intégrations**: Frontend/Backend communication opérationnelle
