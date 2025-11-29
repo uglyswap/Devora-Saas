@@ -21,7 +21,20 @@ export default function Login() {
     try {
       await login(email, password);
       toast.success('Connexion réussie !');
-      navigate('/dashboard');
+      
+      // Récupérer les infos utilisateur pour vérifier le rôle
+      const token = localStorage.getItem('token');
+      const userResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const userData = await userResponse.json();
+      
+      // Rediriger selon le rôle
+      if (userData.is_admin) {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       console.error('Login error:', error);
       toast.error(error.response?.data?.detail || 'Email ou mot de passe incorrect');
