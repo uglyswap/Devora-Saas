@@ -54,6 +54,117 @@ const AdminPanel = () => {
     loadAdminData();
   }, [user, navigate]);
 
+
+  // Generate random password
+  const generatePassword = () => {
+    const length = 16;
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    setNewUserPassword(password);
+    toast.success('Mot de passe généré !');
+  };
+
+  // Copy password to clipboard
+  const copyPassword = () => {
+    navigator.clipboard.writeText(newUserPassword);
+    toast.success('Mot de passe copié !');
+  };
+
+  // Create new user
+  const createNewUser = async () => {
+    if (!newUserEmail || !newUserName || !newUserPassword) {
+      toast.error('Veuillez remplir tous les champs');
+      return;
+    }
+
+    setCreatingUser(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/users`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: newUserEmail,
+          name: newUserName,
+          password: newUserPassword,
+          subscription_status: newUserStatus,
+          is_admin: newUserIsAdmin
+        })
+      });
+
+      if (response.ok) {
+        toast.success('✅ Utilisateur créé avec succès');
+        setShowAddUserForm(false);
+        setNewUserEmail('');
+        setNewUserName('');
+        setNewUserPassword('');
+        setNewUserStatus('trialing');
+        setNewUserIsAdmin(false);
+        loadAdminData(); // Reload users list
+      } else {
+        const error = await response.json();
+        toast.error(`❌ ${error.detail || 'Erreur lors de la création'}`);
+      }
+    } catch (error) {
+      console.error('Error creating user:', error);
+      toast.error('❌ Erreur lors de la création de l\'utilisateur');
+    } finally {
+      setCreatingUser(false);
+    }
+  };
+
+  // Update user status
+  const updateUserStatus = async () => {
+    if (!editingUser || !newStatus) {
+      toast.error('Veuillez sélectionner un statut');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${editingUser.id}/status`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            subscription_status: newStatus
+          })
+        }
+      );
+
+      if (response.ok) {
+        toast.success('✅ Statut mis à jour avec succès');
+        setShowEditStatusModal(false);
+        setEditingUser(null);
+        setNewStatus('');
+        loadAdminData(); // Reload users list
+      } else {
+        const error = await response.json();
+        toast.error(`❌ ${error.detail || 'Erreur lors de la mise à jour'}`);
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+      toast.error('❌ Erreur lors de la mise à jour du statut');
+    }
+  };
+
+  // Open edit status modal
+  const openEditStatusModal = (user) => {
+    setEditingUser(user);
+    setNewStatus(user.subscription_status);
+    setShowEditStatusModal(true);
+  };
+
   const loadAdminData = async () => {
     try {
       const token = localStorage.getItem('token');
