@@ -198,7 +198,7 @@ const AdminPanel = () => {
                     value={config.stripe_api_key || ''}
                     onChange={(e) => handleConfigChange('stripe_api_key', e.target.value)}
                     placeholder={config.stripe_test_mode ? 'sk_test_...' : 'sk_live_...'}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -210,7 +210,7 @@ const AdminPanel = () => {
                     value={config.stripe_webhook_secret || ''}
                     onChange={(e) => handleConfigChange('stripe_webhook_secret', e.target.value)}
                     placeholder="whsec_..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -229,7 +229,7 @@ const AdminPanel = () => {
                     value={config.resend_api_key || ''}
                     onChange={(e) => handleConfigChange('resend_api_key', e.target.value)}
                     placeholder="re_..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -240,7 +240,7 @@ const AdminPanel = () => {
                     type="email"
                     value={config.resend_from_email}
                     onChange={(e) => handleConfigChange('resend_from_email', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -259,7 +259,7 @@ const AdminPanel = () => {
                     step="0.01"
                     value={config.subscription_price}
                     onChange={(e) => handleConfigChange('subscription_price', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -270,7 +270,7 @@ const AdminPanel = () => {
                     type="number"
                     value={config.free_trial_days}
                     onChange={(e) => handleConfigChange('free_trial_days', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -281,7 +281,7 @@ const AdminPanel = () => {
                     type="number"
                     value={config.max_failed_payments}
                     onChange={(e) => handleConfigChange('max_failed_payments', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
               </div>
