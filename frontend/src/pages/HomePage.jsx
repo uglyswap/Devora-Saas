@@ -36,25 +36,16 @@ const HomePage = () => {
         </button>
         <div className="flex gap-3">
           {user ? (
-            // Menu pour utilisateur connecté
+            // Menu pour utilisateur connecté (seulement Dashboard et Déconnexion sur la home)
             <>
               <Button
-                data-testid="projects-nav-button"
-                variant="ghost"
+                data-testid="dashboard-nav-button"
+                variant="outline"
                 onClick={() => navigate('/dashboard')}
-                className="text-gray-300 hover:text-white hover:bg-white/5"
+                className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
               >
-                <FolderOpen className="w-4 h-4 mr-2" />
-                Mes projets
-              </Button>
-              <Button
-                data-testid="settings-nav-button"
-                variant="ghost"
-                onClick={() => navigate('/settings')}
-                className="text-gray-300 hover:text-white hover:bg-white/5"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Paramètres
+                <LayoutDashboard className="w-4 h-4 mr-2" />
+                Dashboard
               </Button>
               <Button
                 data-testid="logout-nav-button"
