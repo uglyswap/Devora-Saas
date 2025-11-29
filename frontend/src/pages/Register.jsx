@@ -27,7 +27,7 @@ export default function Register() {
 
     try {
       await register(email, password, fullName);
-      toast.success('🎉 Compte créé ! Bienvenue sur Devora !');
+      toast.success('Compte créé ! Bienvenue sur Devora !');
       navigate('/dashboard');
     } catch (error) {
       console.error('Register error:', error);
@@ -124,9 +124,7 @@ export default function Register() {
             </div>
 
             <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-sm text-blue-300">
-              ✅ Essai gratuit de 7 jours<br />
-              ✅ Aucune carte bancaire requise<br />
-              ✅ Annulation possible à tout moment
+              Essai gratuit de 7 jours - Annulation possible à tout moment
             </div>
 
             <Button

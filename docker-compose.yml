@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: devora-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: devora_admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-DevoraSecure2024Mongo}
+      MONGO_INITDB_DATABASE: devora_db
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - devora-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend FastAPI
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: devora-backend
+    restart: unless-stopped
+    ports:
+      - "4521:4521"
+    environment:
+      # MongoDB
+      MONGO_URL: mongodb://devora_admin:${MONGO_PASSWORD:-DevoraSecure2024Mongo}@mongodb:27017/devora_db?authSource=admin
+      DB_NAME: devora_db
+      # JWT
+      SECRET_KEY: ${SECRET_KEY:-DevoraJWTSecretKey2024SuperSecure!Min32Chars}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 1440
+      # URLs
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4522}
+      # Stripe (optional)
+      STRIPE_API_KEY: ${STRIPE_API_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      # Resend (optional)
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - devora-network
+    healthcheck:
+      test: curl -f http://localhost:4521/api/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_BACKEND_URL: ${BACKEND_URL:-http://localhost:4521}
+    container_name: devora-frontend
+    restart: unless-stopped
+    ports:
+      - "4522:4522"
+    depends_on:
+      - backend
+    networks:
+      - devora-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  devora-network:
+    driver: bridge
