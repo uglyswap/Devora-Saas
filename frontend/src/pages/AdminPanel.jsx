@@ -20,7 +20,10 @@ const AdminPanel = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userProjects, setUserProjects] = useState([]);
+  const [userInvoices, setUserInvoices] = useState([]);
+  const [totalPaidUser, setTotalPaidUser] = useState(0);
   const [loadingProjects, setLoadingProjects] = useState(false);
+  const [loadingInvoices, setLoadingInvoices] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [message, setMessage] = useState(null);
   const [activeTab, setActiveTab] = useState('info');
