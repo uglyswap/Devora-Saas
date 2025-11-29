@@ -121,8 +121,8 @@ const AdminPanel = () => {
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-500">Utilisateurs totaux</h3>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.total_users}</p>
+              <h3 className="text-sm font-medium text-gray-400">Utilisateurs totaux</h3>
+              <p className="text-3xl font-bold text-white mt-2">{stats.total_users}</p>
             </div>
             <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
               <h3 className="text-sm font-medium text-gray-400">Abonnements actifs</h3>
