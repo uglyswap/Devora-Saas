@@ -648,17 +648,30 @@ const AdminPanel = () => {
                         )}
                       </td>
                       <td className="py-3 px-4">
-                        <Button
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedUser(u);
-                            setActiveTab('info');
-                          }}
-                          className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
-                        >
-                          Détails
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedUser(u);
+                              setActiveTab('info');
+                            }}
+                            className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
+                          >
+                            Détails
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openEditStatusModal(u);
+                            }}
+                            className="bg-purple-500/20 text-purple-400 hover:bg-purple-500/30"
+                          >
+                            <Edit className="w-3 h-3 mr-1" />
+                            Statut
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}
