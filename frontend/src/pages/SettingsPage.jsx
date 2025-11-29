@@ -275,7 +275,7 @@ const SettingsPage = () => {
                         a.click();
                         toast.success('✅ Données exportées !');
                       } else {
-                        toast.error('❌ Erreur lors de l\\'export');
+                        toast.error("❌ Erreur lors de l'export");
                       }
                     } catch (error) {
                       toast.error('❌ Erreur lors de l\\'export');
