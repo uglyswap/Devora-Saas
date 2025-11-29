@@ -1,10 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
-import { Code2, Sparkles, Github, Zap, Rocket, Settings } from 'lucide-react';
+import { Code2, Sparkles, Github, Zap, Rocket, Settings, LogOut, FolderOpen } from 'lucide-react';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0a0b] via-[#111113] to-[#0a0a0b] relative overflow-hidden">
@@ -16,32 +23,70 @@ const HomePage = () => {
 
       {/* Header */}
       <header className="relative z-10 px-6 py-8 flex justify-between items-center max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
+        <button
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
           <div className="bg-gradient-to-br from-emerald-400 to-emerald-600 p-2 rounded-lg">
             <Code2 className="w-6 h-6 text-white" />
           </div>
           <span className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
             Devora
           </span>
-        </div>
+        </button>
         <div className="flex gap-3">
-          <Button
-            data-testid="settings-nav-button"
-            variant="ghost"
-            onClick={() => navigate('/settings')}
-            className="text-gray-300 hover:text-white hover:bg-white/5"
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Paramètres
-          </Button>
-          <Button
-            data-testid="dashboard-nav-button"
-            variant="outline"
-            onClick={() => navigate('/dashboard')}
-            className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
-          >
-            Dashboard
-          </Button>
+          {user ? (
+            // Menu pour utilisateur connecté
+            <>
+              <Button
+                data-testid="projects-nav-button"
+                variant="ghost"
+                onClick={() => navigate('/dashboard')}
+                className="text-gray-300 hover:text-white hover:bg-white/5"
+              >
+                <FolderOpen className="w-4 h-4 mr-2" />
+                Mes projets
+              </Button>
+              <Button
+                data-testid="settings-nav-button"
+                variant="ghost"
+                onClick={() => navigate('/settings')}
+                className="text-gray-300 hover:text-white hover:bg-white/5"
+              >
+                <Settings className="w-4 h-4 mr-2" />
+                Paramètres
+              </Button>
+              <Button
+                data-testid="logout-nav-button"
+                variant="ghost"
+                onClick={handleLogout}
+                className="text-red-300 hover:text-red-200 hover:bg-red-500/10"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Déconnexion
+              </Button>
+            </>
+          ) : (
+            // Menu pour utilisateur non connecté
+            <>
+              <Button
+                data-testid="login-nav-button"
+                variant="ghost"
+                onClick={() => navigate('/login')}
+                className="text-gray-300 hover:text-white hover:bg-white/5"
+              >
+                Connexion
+              </Button>
+              <Button
+                data-testid="register-nav-button"
+                variant="outline"
+                onClick={() => navigate('/register')}
+                className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+              >
+                S'inscrire
+              </Button>
+            </>
+          )}
         </div>
       </header>
 
@@ -50,7 +95,7 @@ const HomePage = () => {
         <div className="text-center space-y-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-sm font-medium">
             <Sparkles className="w-4 h-4" />
-            Gratuit & Open Source
+            Essai gratuit 7 jours • 9,90€/mois ensuite
           </div>
 
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold leading-tight">
@@ -77,16 +122,12 @@ const HomePage = () => {
               <Rocket className="w-5 h-5 mr-2" />
               Essai gratuit 7 jours
             </Button>
-            <Button
-              data-testid="view-projects-button"
-              size="lg"
-              variant="outline"
-              onClick={() => navigate('/dashboard')}
-              className="border-gray-700 text-gray-300 hover:bg-white/5 font-semibold px-8 py-6 text-lg rounded-xl transition-all hover:scale-105"
-            >
-              Voir mes projets
-            </Button>
           </div>
+          
+          {/* Pricing info */}
+          <p className="text-sm text-gray-500 max-w-md mx-auto">
+            Carte bancaire requise • Annulez quand vous voulez • Facturation automatique après 7 jours
+          </p>
         </div>
 
         {/* Features Grid */}
@@ -127,8 +168,11 @@ const HomePage = () => {
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Prêt à créer quelque chose d'incroyable ?
           </h2>
-          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            Ajoutez simplement votre clé API OpenRouter et commencez à générer du code immédiatement.
+          <p className="text-xl text-gray-400 mb-4 max-w-2xl mx-auto">
+            Commencez votre essai gratuit de 7 jours dès maintenant.
+          </p>
+          <p className="text-lg text-emerald-400 font-semibold mb-8">
+            Seulement 9,90€/mois après l'essai
           </p>
           <Button
             data-testid="start-creating-button"

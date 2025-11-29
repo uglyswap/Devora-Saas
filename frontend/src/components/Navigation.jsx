@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
-import { Settings, CreditCard, Shield, LogOut, Code2 } from 'lucide-react';
+import { Settings, CreditCard, Shield, LogOut, Code2, FolderOpen } from 'lucide-react';
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -17,9 +17,9 @@ const Navigation = () => {
     <header className="border-b border-white/5 bg-black/20 backdrop-blur-xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
-          {/* Logo */}
+          {/* Logo - Redirige vers la page home */}
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/')}
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <div className="bg-gradient-to-br from-emerald-400 to-emerald-600 p-2 rounded-lg">
@@ -32,6 +32,16 @@ const Navigation = () => {
 
           {/* Navigation Links */}
           <div className="flex items-center gap-2">
+            {/* Mes Projets */}
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/dashboard')}
+              className="text-gray-300 hover:text-white hover:bg-white/5"
+            >
+              <FolderOpen className="w-4 h-4 mr-2" />
+              Mes projets
+            </Button>
+
             {/* Billing */}
             <Button
               variant="ghost"

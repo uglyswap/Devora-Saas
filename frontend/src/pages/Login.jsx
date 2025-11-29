@@ -49,8 +49,8 @@ export default function Login() {
               Devora
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-white mb-2">Bon retour !</h1>
-          <p className="text-gray-400">Connectez-vous à votre compte</p>
+          <h1 className="text-2xl font-bold text-white mb-2">Connexion</h1>
+          <p className="text-gray-400">Accédez à votre compte Devora</p>
         </div>
 
         {/* Form */}
