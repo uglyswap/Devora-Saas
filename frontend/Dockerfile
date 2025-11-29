@@ -8,6 +8,9 @@ RUN if [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
     elif [ -f package-lock.json ]; then npm ci --legacy-peer-deps; \
     else npm install --legacy-peer-deps; fi
 
+# Fix ajv/ajv-keywords compatibility issue
+RUN npm install ajv@8 --legacy-peer-deps
+
 # Copy source and build
 COPY . .
 
