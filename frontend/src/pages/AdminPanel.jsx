@@ -30,7 +30,21 @@ const AdminPanel = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [message, setMessage] = useState(null);
   const [activeTab, setActiveTab] = useState('info');
-  const [activeSection, setActiveSection] = useState('users'); // users, config, stats
+  const [activeSection, setActiveSection] = useState('users'); // users, config, stats, addUser
+  
+  // New user form states
+  const [showAddUserForm, setShowAddUserForm] = useState(false);
+  const [newUserEmail, setNewUserEmail] = useState('');
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserPassword, setNewUserPassword] = useState('');
+  const [newUserStatus, setNewUserStatus] = useState('trialing');
+  const [newUserIsAdmin, setNewUserIsAdmin] = useState(false);
+  const [creatingUser, setCreatingUser] = useState(false);
+  
+  // Edit status modal
+  const [showEditStatusModal, setShowEditStatusModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [newStatus, setNewStatus] = useState('');
 
   useEffect(() => {
     if (!user?.is_admin) {
