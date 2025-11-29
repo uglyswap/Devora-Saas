@@ -161,16 +161,13 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* CTA Section */}
+        {/* DESIRE + ACTION - CTA Section */}
         <div className="mt-32 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 rounded-3xl p-12 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Prêt à créer quelque chose d'incroyable ?
           </h2>
-          <p className="text-xl text-gray-400 mb-4 max-w-2xl mx-auto">
-            Commencez votre essai gratuit de 7 jours dès maintenant.
-          </p>
-          <p className="text-lg text-emerald-400 font-semibold mb-8">
-            Seulement 9,90€/mois après l'essai
+          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            Rejoignez les développeurs qui utilisent Devora pour créer plus vite et mieux.
           </p>
           <Button
             data-testid="start-creating-button"
