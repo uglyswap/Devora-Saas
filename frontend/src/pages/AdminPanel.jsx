@@ -571,7 +571,12 @@ const AdminPanel = () => {
                   Informations
                 </button>
                 <button
-                  onClick={() => setActiveTab('projects')}
+                  onClick={() => {
+                    setActiveTab('projects');
+                    if (selectedUser) {
+                      loadUserProjects(selectedUser.id);
+                    }
+                  }}
                   className={`px-4 py-3 text-sm font-medium transition-colors ${
                     activeTab === 'projects'
                       ? 'text-emerald-400 border-b-2 border-emerald-400'
