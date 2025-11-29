@@ -411,3 +411,37 @@ Le backend Devora SaaS est **entièrement fonctionnel** et prêt pour l'ajout de
 
 **Conclusion**: Toutes les modifications UX sont parfaitement implémentées. L'application respecte exactement les spécifications demandées par l'utilisateur.
 
+## ✅ Tests UX Nouvelles Modifications Devora - 2025-11-29 [CURRENT]
+
+### Tests UX Demandés par l'Utilisateur - Framework AIDA
+
+#### Tests à effectuer:
+
+1. **Page d'accueil (non connecté):**
+   - Badge "Agentic AI Coding" (plus "Essai gratuit 7 jours • 9,90€/mois ensuite")
+   - Prix "9,90€/mois" en GROS au-dessus du bouton "Essai gratuit 7 jours"
+   - Phrase "Développez en temps réel sans coder !"
+   - "Prévisualisez, exportez et déployez en un clic 🚀"
+   - Section feature "Génération de code IA Agentique" avec système agentic
+   - Footer "Version Open Source Gratuite disponible sur Github !" avec lien https://github.com/uglyswap/Devora
+   - Vérifier que "Carte bancaire requise..." n'est PLUS présente
+   - Vérifier que "Seulement 9,90€/mois après l'essai" n'est PLUS présent dans CTA du bas
+
+2. **Page d'accueil (connecté):**
+   - Se connecter avec test-billing@devora.fun / TestPassword123!
+   - Vérifier que SEULEMENT "Dashboard" et "Déconnexion" sont visibles (pas "Mes projets", "Paramètres")
+
+3. **Navigation component sur autres pages:**
+   - /dashboard: menu complet ("Mes projets", "Facturation", "Paramètres", "Déconnexion")
+   - /billing: menu complet toujours présent
+
+4. **Framework AIDA vérifié:**
+   - Attention: Badge "Agentic AI Coding" + Titre percutant
+   - Interest: "Développez en temps réel sans coder" + Features
+   - Desire: Prix en gros (9,90€/mois)
+   - Action: Boutons CTA "Essai gratuit 7 jours"
+
+**Status**: À tester
+**Priority**: high
+**needs_retesting**: true
+
