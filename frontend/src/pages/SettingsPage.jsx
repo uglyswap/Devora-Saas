@@ -278,7 +278,7 @@ const SettingsPage = () => {
                         toast.error("❌ Erreur lors de l'export");
                       }
                     } catch (error) {
-                      toast.error('❌ Erreur lors de l\\'export');
+                      toast.error("❌ Erreur lors de l'export");
                     }
                   }}
                   className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
