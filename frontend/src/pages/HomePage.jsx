@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
-import { Code2, Sparkles, Github, Zap, Rocket, Settings, LogOut, FolderOpen } from 'lucide-react';
+import { Code2, Sparkles, Github, Zap, Rocket, LogOut, LayoutDashboard } from 'lucide-react';
 
 const HomePage = () => {
   const navigate = useNavigate();
