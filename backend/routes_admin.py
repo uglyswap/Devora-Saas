@@ -387,3 +387,117 @@ async def toggle_billing(
     }
 
 
+
+
+# Pydantic models for new endpoints
+class CreateUserRequest(BaseModel):
+    email: EmailStr
+    name: str
+    password: str
+    subscription_status: str = 'trialing'  # 'active' or 'trialing'
+    is_admin: bool = False
+
+class UpdateUserStatusRequest(BaseModel):
+    subscription_status: str  # 'active' or 'trialing'
+
+@router.post('/users')
+async def create_user(
+    user_data: CreateUserRequest,
+    current_admin: dict = Depends(get_current_admin_user)
+):
+    """Create a new user manually from admin panel"""
+    
+    # Check if user already exists
+    existing_user = await db.users.find_one({'email': user_data.email}, {'_id': 0})
+    if existing_user:
+        raise HTTPException(
+            status_code=400,
+            detail='User with this email already exists'
+        )
+    
+    # Validate subscription status
+    if user_data.subscription_status not in ['active', 'trialing']:
+        raise HTTPException(
+            status_code=400,
+            detail='subscription_status must be either "active" or "trialing"'
+        )
+    
+    # Create user
+    user_id = str(uuid4())
+    hashed_password = get_password_hash(user_data.password)
+    
+    # Calculate trial end date (7 days from now if trialing)
+    current_period_end = None
+    if user_data.subscription_status == 'trialing':
+        trial_end = datetime.now(timezone.utc) + timedelta(days=7)
+        current_period_end = trial_end.isoformat()
+    
+    new_user = {
+        'id': user_id,
+        'email': user_data.email,
+        'name': user_data.name,
+        'password': hashed_password,
+        'subscription_status': user_data.subscription_status,
+        'is_admin': user_data.is_admin,
+        'current_period_end': current_period_end,
+        'created_at': datetime.now(timezone.utc).isoformat(),
+        'updated_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.users.insert_one(new_user)
+    
+    logger.info(f'Admin {current_admin["email"]} created new user: {user_data.email} (status: {user_data.subscription_status}, admin: {user_data.is_admin})')
+    
+    # Return user without password
+    new_user.pop('password', None)
+    new_user.pop('_id', None)
+    
+    return {
+        'message': 'User created successfully',
+        'user': new_user
+    }
+
+@router.patch('/users/{user_id}/status')
+async def update_user_status(
+    user_id: str,
+    status_data: UpdateUserStatusRequest,
+    current_admin: dict = Depends(get_current_admin_user)
+):
+    """Update user subscription status"""
+    
+    # Validate subscription status
+    if status_data.subscription_status not in ['active', 'trialing']:
+        raise HTTPException(
+            status_code=400,
+            detail='subscription_status must be either "active" or "trialing"'
+        )
+    
+    # Get user
+    user = await db.users.find_one({'id': user_id}, {'_id': 0})
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    
+    # Update status
+    update_data = {
+        'subscription_status': status_data.subscription_status,
+        'updated_at': datetime.now(timezone.utc).isoformat()
+    }
+    
+    # If changing to trialing, set trial end date
+    if status_data.subscription_status == 'trialing':
+        trial_end = datetime.now(timezone.utc) + timedelta(days=7)
+        update_data['current_period_end'] = trial_end.isoformat()
+    
+    await db.users.update_one(
+        {'id': user_id},
+        {'$set': update_data}
+    )
+    
+    logger.info(f'Admin {current_admin["email"]} updated status of {user["email"]} to {status_data.subscription_status}')
+    
+    return {
+        'message': 'User status updated successfully',
+        'user_id': user_id,
+        'new_status': status_data.subscription_status
+    }
+
