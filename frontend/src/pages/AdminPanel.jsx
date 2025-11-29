@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
+import { 
+  User, Mail, Calendar, Euro, Shield, ShieldOff, 
+  Trash2, Gift, CreditCard, FolderOpen, X, 
+  Save, Plus, Minus, Ban, CheckCircle, Search, Settings
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { toast } from 'sonner';
 
 const AdminPanel = () => {
   const { user } = useAuth();
@@ -10,7 +17,12 @@ const AdminPanel = () => {
   const [saving, setSaving] = useState(false);
   const [stats, setStats] = useState(null);
   const [config, setConfig] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const [message, setMessage] = useState(null);
+  const [activeTab, setActiveTab] = useState('info');
+  const [activeSection, setActiveSection] = useState('users'); // users, config, stats
 
   useEffect(() => {
     if (!user?.is_admin) {
@@ -29,8 +41,7 @@ const AdminPanel = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (statsRes.ok) {
-        const statsData = await statsRes.json();
-        setStats(statsData);
+        setStats(await statsRes.json());
       }
 
       // Load config
@@ -38,8 +49,16 @@ const AdminPanel = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (configRes.ok) {
-        const configData = await configRes.json();
-        setConfig(configData);
+        setConfig(await configRes.json());
+      }
+
+      // Load users
+      const usersRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/users?limit=1000`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (usersRes.ok) {
+        const usersData = await usersRes.json();
+        setUsers(usersData.users);
       }
 
       setLoading(false);
@@ -77,49 +96,141 @@ const AdminPanel = () => {
       });
 
       if (response.ok) {
-        const updatedConfig = await response.json();
-        setConfig(updatedConfig);
-        setMessage({ type: 'success', text: '✅ Configuration sauvegardée avec succès !' });
+        setConfig(await response.json());
+        toast.success('✅ Configuration sauvegardée !');
       } else {
-        setMessage({ type: 'error', text: '❌ Erreur lors de la sauvegarde' });
+        toast.error('❌ Erreur lors de la sauvegarde');
       }
     } catch (error) {
       console.error('Error saving config:', error);
-      setMessage({ type: 'error', text: '❌ Erreur lors de la sauvegarde' });
+      toast.error('❌ Erreur lors de la sauvegarde');
     }
     setSaving(false);
   };
 
+  const promoteToAdmin = async (userId) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${userId}/promote-admin`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        toast.success('✅ Utilisateur promu en admin !');
+        loadAdminData();
+        setSelectedUser(null);
+      } else {
+        toast.error('❌ Erreur lors de la promotion');
+      }
+    } catch (error) {
+      toast.error('❌ Erreur lors de la promotion');
+    }
+  };
+
+  const revokeAdmin = async (userId) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${userId}/revoke-admin`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        toast.success('✅ Statut admin révoqué !');
+        loadAdminData();
+        setSelectedUser(null);
+      } else {
+        const data = await response.json();
+        toast.error(data.detail || '❌ Erreur');
+      }
+    } catch (error) {
+      toast.error('❌ Erreur lors de la révocation');
+    }
+  };
+
+  const toggleUserStatus = async (userId, isActive) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${userId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ is_active: !isActive })
+      });
+      
+      if (response.ok) {
+        toast.success(isActive ? '✅ Utilisateur désactivé' : '✅ Utilisateur activé');
+        loadAdminData();
+        if (selectedUser?.id === userId) {
+          setSelectedUser({ ...selectedUser, is_active: !isActive });
+        }
+      } else {
+        toast.error('❌ Erreur');
+      }
+    } catch (error) {
+      toast.error('❌ Erreur');
+    }
+  };
+
+  const filteredUsers = users.filter(u => 
+    u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (u.full_name && u.full_name.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  const getTotalPaid = (user) => {
+    return "0.00"; // Placeholder
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl">Chargement...</div>
+      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0b] via-[#111113] to-[#0a0a0b] flex items-center justify-center">
+        <div className="text-xl text-white">Chargement...</div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0a0b] via-[#111113] to-[#0a0a0b]">
-      {/* Navigation */}
       <Navigation />
       
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white">🛠️ Panel Administrateur</h1>
-          <p className="text-gray-400 mt-2">Gérez la configuration système et les KPIs</p>
+          <p className="text-gray-400 mt-2">Gestion complète de la plateforme Devora</p>
         </div>
 
-        {message && (
-          <div className={`mb-6 p-4 rounded-lg ${
-            message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
-          }`}>
-            {message.text}
-          </div>
-        )}
+        {/* Navigation Tabs */}
+        <div className="flex gap-2 mb-8">
+          <button
+            onClick={() => setActiveSection('users')}
+            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+              activeSection === 'users'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+            }`}
+          >
+            <User className="w-4 h-4 inline mr-2" />
+            Utilisateurs
+          </button>
+          <button
+            onClick={() => setActiveSection('config')}
+            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+              activeSection === 'config'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+            }`}
+          >
+            <Settings className="w-4 h-4 inline mr-2" />
+            Configuration
+          </button>
+        </div>
 
         {/* KPIs Dashboard */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
               <h3 className="text-sm font-medium text-gray-400">Utilisateurs totaux</h3>
               <p className="text-3xl font-bold text-white mt-2">{stats.total_users}</p>
@@ -133,39 +244,100 @@ const AdminPanel = () => {
               <p className="text-3xl font-bold text-blue-400 mt-2">{stats.total_revenue.toFixed(2)}€</p>
             </div>
             <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-400">Projets totaux</h3>
-              <p className="text-3xl font-bold text-purple-400 mt-2">{stats.total_projects}</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-400">Nouveaux utilisateurs (ce mois)</h3>
+              <h3 className="text-sm font-medium text-gray-400">Nouveaux ce mois</h3>
               <p className="text-3xl font-bold text-orange-400 mt-2">{stats.new_users_this_month}</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-400">Taux de churn</h3>
-              <p className="text-3xl font-bold text-red-400 mt-2">{stats.churn_rate}%</p>
             </div>
           </div>
         )}
 
-        {/* User Management */}
-        <div className="bg-white/5 border border-white/10 rounded-lg p-8 mb-8">
-          <h2 className="text-2xl font-bold text-white mb-6">👥 Gestion des Utilisateurs</h2>
-          <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-300 mb-2">Promouvoir un utilisateur en admin</h3>
-            <p className="text-sm text-blue-200 mb-4">
-              Pour promouvoir un utilisateur existant en admin, utilisez l'API :
-            </p>
-            <code className="block bg-black/30 p-3 rounded border border-blue-500/30 text-sm text-blue-100 overflow-x-auto">
-              POST /api/admin/users/&#123;user_id&#125;/promote-admin
-            </code>
-            <p className="text-xs text-blue-300 mt-2">
-              Vous pouvez aussi utiliser le script : <code className="bg-black/30 px-2 py-1 rounded border border-blue-500/20">python /app/backend/create_admin.py</code>
-            </p>
-          </div>
-        </div>
+        {/* Users Section */}
+        {activeSection === 'users' && (
+          <div className="bg-white/5 border border-white/10 rounded-lg p-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-white">👥 Gestion des Utilisateurs</h2>
+              
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Rechercher un utilisateur..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+            </div>
 
-        {/* Configuration System */}
-        {config && (
+            {/* Users Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-white/10">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Email</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Nom</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Inscription</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Total Payé</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Statut</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Rôle</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.map((u) => (
+                    <tr 
+                      key={u.id}
+                      className="border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors"
+                      onClick={() => setSelectedUser(u)}
+                    >
+                      <td className="py-3 px-4 text-sm text-gray-300">{u.email}</td>
+                      <td className="py-3 px-4 text-sm text-gray-300">{u.full_name || '-'}</td>
+                      <td className="py-3 px-4 text-sm text-gray-400">
+                        {new Date(u.created_at).toLocaleDateString('fr-FR')}
+                      </td>
+                      <td className="py-3 px-4 text-sm text-emerald-400 font-semibold">
+                        {getTotalPaid(u)}€
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          u.subscription_status === 'active' ? 'bg-green-500/20 text-green-400' :
+                          u.subscription_status === 'trialing' ? 'bg-blue-500/20 text-blue-400' :
+                          u.subscription_status === 'past_due' ? 'bg-orange-500/20 text-orange-400' :
+                          'bg-gray-500/20 text-gray-400'
+                        }`}>
+                          {u.subscription_status}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        {u.is_admin && (
+                          <span className="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-400">
+                            Admin
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4">
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedUser(u);
+                            setActiveTab('info');
+                          }}
+                          className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
+                        >
+                          Détails
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Configuration Section */}
+        {activeSection === 'config' && config && (
           <div className="bg-white/5 border border-white/10 rounded-lg p-8">
             <h2 className="text-2xl font-bold text-white mb-6">⚙️ Configuration Système</h2>
             
@@ -184,7 +356,7 @@ const AdminPanel = () => {
                       onChange={(e) => handleConfigChange('stripe_test_mode', e.target.checked)}
                       className="rounded border-gray-300 text-green-600 focus:ring-green-500 h-5 w-5"
                     />
-                    <span className="ml-2 text-sm text-gray-600">
+                    <span className="ml-2 text-sm text-gray-300">
                       Activer le mode test Stripe
                     </span>
                   </label>
@@ -292,10 +464,269 @@ const AdminPanel = () => {
               <button
                 onClick={saveConfig}
                 disabled={saving}
-                className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {saving ? 'Sauvegarde...' : '💾 Sauvegarder la configuration'}
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* User Details Modal */}
+        {selectedUser && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+            <div className="bg-[#1a1a1d] border border-white/10 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+              {/* Modal Header */}
+              <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold text-white">{selectedUser.email}</h2>
+                  <p className="text-sm text-gray-400 mt-1">
+                    Inscrit le {new Date(selectedUser.created_at).toLocaleDateString('fr-FR', { 
+                      year: 'numeric', month: 'long', day: 'numeric' 
+                    })}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex border-b border-white/10 px-6">
+                <button
+                  onClick={() => setActiveTab('info')}
+                  className={`px-4 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'info'
+                      ? 'text-emerald-400 border-b-2 border-emerald-400'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <User className="w-4 h-4 inline mr-2" />
+                  Informations
+                </button>
+                <button
+                  onClick={() => setActiveTab('projects')}
+                  className={`px-4 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'projects'
+                      ? 'text-emerald-400 border-b-2 border-emerald-400'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <FolderOpen className="w-4 h-4 inline mr-2" />
+                  Projets
+                </button>
+                <button
+                  onClick={() => setActiveTab('billing')}
+                  className={`px-4 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'billing'
+                      ? 'text-emerald-400 border-b-2 border-emerald-400'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  <CreditCard className="w-4 h-4 inline mr-2" />
+                  Facturation
+                </button>
+              </div>
+
+              {/* Tab Content */}
+              <div className="p-6 overflow-y-auto flex-1">
+                {activeTab === 'info' && (
+                  <div className="space-y-6">
+                    {/* User Info */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm text-gray-400">Email</label>
+                        <p className="text-white mt-1">{selectedUser.email}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm text-gray-400">Nom complet</label>
+                        <p className="text-white mt-1">{selectedUser.full_name || 'Non renseigné'}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm text-gray-400">Statut</label>
+                        <p className="text-white mt-1">
+                          {selectedUser.is_active ? (
+                            <span className="text-green-400">✅ Actif</span>
+                          ) : (
+                            <span className="text-red-400">❌ Désactivé</span>
+                          )}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="text-sm text-gray-400">Abonnement</label>
+                        <p className="text-white mt-1 capitalize">{selectedUser.subscription_status}</p>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="border-t border-white/10 pt-6">
+                      <h3 className="text-lg font-semibold text-white mb-4">Actions administrateur</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {selectedUser.is_admin ? (
+                          <Button
+                            onClick={() => revokeAdmin(selectedUser.id)}
+                            className="bg-orange-500/20 text-orange-400 hover:bg-orange-500/30"
+                          >
+                            <ShieldOff className="w-4 h-4 mr-2" />
+                            Révoquer Admin
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={() => promoteToAdmin(selectedUser.id)}
+                            className="bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30"
+                          >
+                            <Shield className="w-4 h-4 mr-2" />
+                            Promouvoir Admin
+                          </Button>
+                        )}
+                        
+                        <Button
+                          onClick={() => toggleUserStatus(selectedUser.id, selectedUser.is_active)}
+                          className={selectedUser.is_active 
+                            ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                            : "bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                          }
+                        >
+                          <Ban className="w-4 h-4 mr-2" />
+                          {selectedUser.is_active ? 'Désactiver' : 'Activer'}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'projects' && (
+                  <div className="space-y-4">
+                    <p className="text-gray-400">
+                      Liste des projets de {selectedUser.email}
+                    </p>
+                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                      <p className="text-sm text-blue-200">
+                        📋 Fonctionnalité en cours d'implémentation : Affichage et édition des projets utilisateur
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'billing' && (
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold text-white mb-4">Gestion de facturation</h3>
+                      
+                      {/* Offer Free Months */}
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-4">
+                        <label className="text-sm text-gray-400 mb-2 block">Offrir des mois gratuits</label>
+                        <div className="flex gap-2">
+                          <input
+                            type="number"
+                            min="1"
+                            max="12"
+                            defaultValue="1"
+                            id="gift-months-input"
+                            className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
+                          />
+                          <Button 
+                            onClick={async () => {
+                              const months = document.getElementById('gift-months-input').value;
+                              const token = localStorage.getItem('token');
+                              try {
+                                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${selectedUser.id}/gift-months?months=${months}`, {
+                                  method: 'POST',
+                                  headers: { 'Authorization': `Bearer ${token}` }
+                                });
+                                if (response.ok) {
+                                  toast.success(`✅ ${months} mois offerts !`);
+                                  loadAdminData();
+                                } else {
+                                  toast.error('❌ Erreur');
+                                }
+                              } catch (error) {
+                                toast.error('❌ Erreur');
+                              }
+                            }}
+                            className="bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
+                          >
+                            <Gift className="w-4 h-4 mr-2" />
+                            Offrir
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Subscription Control */}
+                      <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                        <label className="text-sm text-gray-400 mb-2 block">Contrôle d'abonnement</label>
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={async () => {
+                              const token = localStorage.getItem('token');
+                              try {
+                                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${selectedUser.id}/toggle-billing`, {
+                                  method: 'POST',
+                                  headers: { 
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json'
+                                  },
+                                  body: JSON.stringify({ enable: true })
+                                });
+                                if (response.ok) {
+                                  toast.success('✅ Facturation activée');
+                                } else {
+                                  toast.error('❌ Erreur');
+                                }
+                              } catch (error) {
+                                toast.error('❌ Erreur');
+                              }
+                            }}
+                            className="flex-1 bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                          >
+                            <Plus className="w-4 h-4 mr-2" />
+                            Activer Facturation
+                          </Button>
+                          <Button 
+                            onClick={async () => {
+                              const token = localStorage.getItem('token');
+                              try {
+                                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${selectedUser.id}/toggle-billing`, {
+                                  method: 'POST',
+                                  headers: { 
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json'
+                                  },
+                                  body: JSON.stringify({ enable: false })
+                                });
+                                if (response.ok) {
+                                  toast.success('✅ Facturation suspendue');
+                                } else {
+                                  toast.error('❌ Erreur');
+                                }
+                              } catch (error) {
+                                toast.error('❌ Erreur');
+                              }
+                            }}
+                            className="flex-1 bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                          >
+                            <Minus className="w-4 h-4 mr-2" />
+                            Suspendre Facturation
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Payment History */}
+                      <div className="mt-6">
+                        <h4 className="text-sm font-medium text-white mb-3">Historique des paiements</h4>
+                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                          <p className="text-sm text-blue-200">
+                            💳 Aucun paiement enregistré pour cet utilisateur
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
