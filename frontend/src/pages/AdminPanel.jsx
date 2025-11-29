@@ -230,22 +230,55 @@ const AdminPanel = () => {
 
         {/* KPIs Dashboard */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-400">Utilisateurs totaux</h3>
-              <p className="text-3xl font-bold text-white mt-2">{stats.total_users}</p>
+          <div className="space-y-6 mb-8">
+            {/* Première ligne - Utilisateurs & Abonnements */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-400">Utilisateurs totaux</h3>
+                <p className="text-3xl font-bold text-white mt-2">{stats.total_users}</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-400">Abonnements actifs</h3>
+                <p className="text-3xl font-bold text-green-400 mt-2">{stats.active_subscriptions}</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-400">Nouveaux ce mois</h3>
+                <p className="text-3xl font-bold text-orange-400 mt-2">{stats.new_users_this_month}</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
+                <h3 className="text-sm font-medium text-gray-400">Taux de churn</h3>
+                <p className="text-3xl font-bold text-red-400 mt-2">{stats.churn_rate}%</p>
+              </div>
             </div>
-            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-400">Abonnements actifs</h3>
-              <p className="text-3xl font-bold text-green-400 mt-2">{stats.active_subscriptions}</p>
+
+            {/* Deuxième ligne - Revenue */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 p-6 rounded-lg">
+                <h3 className="text-sm font-medium text-blue-300">💰 Revenue Total Cumulé</h3>
+                <p className="text-3xl font-bold text-blue-400 mt-2">{stats.total_revenue.toFixed(2)}€</p>
+              </div>
+              <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 border border-emerald-500/30 p-6 rounded-lg">
+                <h3 className="text-sm font-medium text-emerald-300">📈 Revenue Mois en Cours</h3>
+                <p className="text-3xl font-bold text-emerald-400 mt-2">{stats.revenue_current_month.toFixed(2)}€</p>
+              </div>
+              <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30 p-6 rounded-lg">
+                <h3 className="text-sm font-medium text-purple-300">📊 Revenue Mois Dernier</h3>
+                <p className="text-3xl font-bold text-purple-400 mt-2">{stats.revenue_last_month.toFixed(2)}€</p>
+              </div>
             </div>
-            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-400">Revenue total</h3>
-              <p className="text-3xl font-bold text-blue-400 mt-2">{stats.total_revenue.toFixed(2)}€</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 p-6 rounded-lg">
-              <h3 className="text-sm font-medium text-gray-400">Nouveaux ce mois</h3>
-              <p className="text-3xl font-bold text-orange-400 mt-2">{stats.new_users_this_month}</p>
+
+            {/* Troisième ligne - Annulations */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-gradient-to-br from-red-500/20 to-red-600/20 border border-red-500/30 p-6 rounded-lg">
+                <h3 className="text-sm font-medium text-red-300">🚫 Annulations Mois en Cours</h3>
+                <p className="text-3xl font-bold text-red-400 mt-2">{stats.cancellations_current_month}</p>
+                <p className="text-xs text-red-200 mt-2">Abonnements annulés ce mois</p>
+              </div>
+              <div className="bg-gradient-to-br from-orange-500/20 to-orange-600/20 border border-orange-500/30 p-6 rounded-lg">
+                <h3 className="text-sm font-medium text-orange-300">📉 Annulations Mois Dernier</h3>
+                <p className="text-3xl font-bold text-orange-400 mt-2">{stats.cancellations_last_month}</p>
+                <p className="text-xs text-orange-200 mt-2">Abonnements annulés le mois dernier</p>
+              </div>
             </div>
           </div>
         )}
