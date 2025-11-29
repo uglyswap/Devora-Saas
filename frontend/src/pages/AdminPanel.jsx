@@ -476,18 +476,130 @@ const AdminPanel = () => {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-white">👥 Gestion des Utilisateurs</h2>
               
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Rechercher un utilisateur..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
+              <div className="flex gap-4 items-center">
+                {/* Add User Button */}
+                <Button
+                  onClick={() => setShowAddUserForm(!showAddUserForm)}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  {showAddUserForm ? 'Fermer' : 'Ajouter un utilisateur'}
+                </Button>
+                
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Rechercher un utilisateur..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
               </div>
             </div>
+
+            {/* Add User Form */}
+            {showAddUserForm && (
+              <div className="mb-6 p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+                <h3 className="text-xl font-semibold text-emerald-400 mb-4">➕ Créer un nouvel utilisateur</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-300 mb-2 block">Email</Label>
+                    <Input
+                      type="email"
+                      value={newUserEmail}
+                      onChange={(e) => setNewUserEmail(e.target.value)}
+                      placeholder="utilisateur@exemple.com"
+                      className="bg-white/5 border-white/10 text-white"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label className="text-gray-300 mb-2 block">Nom complet</Label>
+                    <Input
+                      type="text"
+                      value={newUserName}
+                      onChange={(e) => setNewUserName(e.target.value)}
+                      placeholder="Jean Dupont"
+                      className="bg-white/5 border-white/10 text-white"
+                    />
+                  </div>
+                  
+                  <div className="md:col-span-2">
+                    <Label className="text-gray-300 mb-2 block">Mot de passe</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        value={newUserPassword}
+                        onChange={(e) => setNewUserPassword(e.target.value)}
+                        placeholder="Mot de passe"
+                        className="bg-white/5 border-white/10 text-white flex-1"
+                      />
+                      <Button
+                        onClick={generatePassword}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        Générer
+                      </Button>
+                      <Button
+                        onClick={copyPassword}
+                        disabled={!newUserPassword}
+                        className="bg-purple-600 hover:bg-purple-700"
+                      >
+                        <Copy className="w-4 h-4 mr-2" />
+                        Copier
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-gray-300 mb-2 block">Statut d'abonnement</Label>
+                    <select
+                      value={newUserStatus}
+                      onChange={(e) => setNewUserStatus(e.target.value)}
+                      className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    >
+                      <option value="trialing">Trialing (Essai)</option>
+                      <option value="active">Active (Actif)</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-gray-300 mb-2 block">Rôle</Label>
+                    <div className="flex items-center gap-4">
+                      <label className="flex items-center gap-2 text-gray-300 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newUserIsAdmin}
+                          onChange={(e) => setNewUserIsAdmin(e.target.checked)}
+                          className="w-4 h-4"
+                        />
+                        <span>Administrateur</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex gap-3 mt-6">
+                  <Button
+                    onClick={createNewUser}
+                    disabled={creatingUser}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    {creatingUser ? 'Création...' : 'Créer l\'utilisateur'}
+                  </Button>
+                  <Button
+                    onClick={() => setShowAddUserForm(false)}
+                    className="bg-gray-600 hover:bg-gray-700 text-white"
+                  >
+                    Annuler
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* Users Table */}
             <div className="overflow-x-auto">
