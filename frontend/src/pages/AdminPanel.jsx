@@ -5,9 +5,12 @@ import Navigation from '../components/Navigation';
 import { 
   User, Mail, Calendar, Euro, Shield, ShieldOff, 
   Trash2, Gift, CreditCard, FolderOpen, X, 
-  Save, Plus, Minus, Ban, CheckCircle, Search, Settings
+  Save, Plus, Minus, Ban, CheckCircle, Search, Settings,
+  UserPlus, Copy, RefreshCw, Edit
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 
 const AdminPanel = () => {
