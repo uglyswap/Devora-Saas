@@ -358,7 +358,7 @@ const AdminPanelAdvanced = () => {
                   onClick={() => setActiveTab('billing')}
                   className={`px-4 py-3 text-sm font-medium transition-colors ${
                     activeTab === 'billing'
-                      : 'text-emerald-400 border-b-2 border-emerald-400'
+                      ? 'text-emerald-400 border-b-2 border-emerald-400'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
