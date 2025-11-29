@@ -81,14 +81,16 @@ const HomePage = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Section - Framework AIDA */}
       <main className="relative z-10 max-w-7xl mx-auto px-6 py-20">
         <div className="text-center space-y-8">
+          {/* ATTENTION - Badge accrocheur */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-sm font-medium">
             <Sparkles className="w-4 h-4" />
-            Essai gratuit 7 jours • 9,90€/mois ensuite
+            Agentic AI Coding
           </div>
 
+          {/* ATTENTION - Titre percutant */}
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold leading-tight">
             Créez des applications
             <br />
@@ -97,13 +99,23 @@ const HomePage = () => {
             </span>
           </h1>
 
+          {/* INTEREST - Proposition de valeur claire */}
           <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Générez du code HTML, CSS et JavaScript en temps réel avec OpenRouter.
+            Développez en temps réel sans coder !
             <br />
-            Prévisualisez, exportez sur GitHub et déployez sur Vercel en un clic.
+            Prévisualisez, exportez et déployez en un clic 🚀
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
+          {/* DESIRE - Prix en gros + CTA */}
+          <div className="flex flex-col items-center gap-6 pt-8">
+            <div className="text-center">
+              <p className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+                9,90€
+                <span className="text-2xl text-gray-400">/mois</span>
+              </p>
+            </div>
+            
+            {/* ACTION - Bouton CTA principal */}
             <Button
               data-testid="get-started-button"
               size="lg"
@@ -114,11 +126,6 @@ const HomePage = () => {
               Essai gratuit 7 jours
             </Button>
           </div>
-          
-          {/* Pricing info */}
-          <p className="text-sm text-gray-500 max-w-md mx-auto">
-            Carte bancaire requise • Annulez quand vous voulez • Facturation automatique après 7 jours
-          </p>
         </div>
 
         {/* Features Grid */}
