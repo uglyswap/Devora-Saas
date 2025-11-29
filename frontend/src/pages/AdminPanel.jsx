@@ -217,6 +217,32 @@ const AdminPanel = () => {
     window.open(`/editor/${projectId}`, '_blank');
   };
 
+  const loadUserInvoices = async (userId) => {
+    setLoadingInvoices(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/users/${userId}/invoices`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUserInvoices(data.invoices);
+        setTotalPaidUser(data.total_paid);
+      } else {
+        toast.error('❌ Erreur lors du chargement des factures');
+        setUserInvoices([]);
+        setTotalPaidUser(0);
+      }
+    } catch (error) {
+      console.error('Error loading user invoices:', error);
+      toast.error('❌ Erreur lors du chargement des factures');
+      setUserInvoices([]);
+      setTotalPaidUser(0);
+    }
+    setLoadingInvoices(false);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0a0a0b] via-[#111113] to-[#0a0a0b] flex items-center justify-center">
