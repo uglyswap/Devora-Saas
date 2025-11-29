@@ -100,18 +100,20 @@ const HomePage = () => {
           </h1>
 
           {/* INTEREST - Proposition de valeur claire */}
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Développez en temps réel sans coder !
-            <br />
-            Prévisualisez, exportez et déployez en un clic 🚀
-          </p>
+          <div className="max-w-5xl mx-auto">
+            <p className="text-2xl md:text-3xl lg:text-4xl text-gray-400 leading-relaxed text-center">
+              Développez en temps réel sans coder !
+            </p>
+            <p className="text-2xl md:text-3xl lg:text-4xl text-gray-400 leading-relaxed text-center mt-2">
+              Prévisualisez, exportez et déployez en un clic 🚀
+            </p>
+          </div>
 
           {/* DESIRE - Prix en gros + CTA */}
           <div className="flex flex-col items-center gap-6 pt-8">
-            <div className="text-center">
-              <p className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
-                9,90€
-                <span className="text-2xl text-gray-400">/mois</span>
+            <div className="text-center" style={{ width: '280px' }}>
+              <p className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent whitespace-nowrap">
+                9,90€<span className="text-xl text-gray-400">/mois</span>
               </p>
             </div>
             
