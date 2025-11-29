@@ -166,7 +166,7 @@ async def get_all_users(
     }
 
 @router.put('/users/{user_id}/status')
-async def update_user_status(
+async def toggle_user_active_status(
     user_id: str,
     is_active: bool,
     current_admin: dict = Depends(get_current_admin_user)
@@ -435,10 +435,11 @@ async def create_user(
     new_user = {
         'id': user_id,
         'email': user_data.email,
-        'name': user_data.name,
-        'password': hashed_password,
+        'full_name': user_data.name,
+        'hashed_password': hashed_password,
         'subscription_status': user_data.subscription_status,
         'is_admin': user_data.is_admin,
+        'is_active': True,
         'current_period_end': current_period_end,
         'created_at': datetime.now(timezone.utc).isoformat(),
         'updated_at': datetime.now(timezone.utc).isoformat()
@@ -449,7 +450,7 @@ async def create_user(
     logger.info(f'Admin {current_admin["email"]} created new user: {user_data.email} (status: {user_data.subscription_status}, admin: {user_data.is_admin})')
     
     # Return user without password
-    new_user.pop('password', None)
+    new_user.pop('hashed_password', None)
     new_user.pop('_id', None)
     
     return {
@@ -457,8 +458,8 @@ async def create_user(
         'user': new_user
     }
 
-@router.patch('/users/{user_id}/status')
-async def update_user_status(
+@router.patch('/users/{user_id}/subscription')
+async def update_user_subscription_status(
     user_id: str,
     status_data: UpdateUserStatusRequest,
     current_admin: dict = Depends(get_current_admin_user)
@@ -500,4 +501,3 @@ async def update_user_status(
         'user_id': user_id,
         'new_status': status_data.subscription_status
     }
-
