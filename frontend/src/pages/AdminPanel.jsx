@@ -1208,70 +1208,68 @@ const AdminPanel = () => {
             </div>
           </div>
         )}
+
+        {/* Edit Status Modal */}
+        {showEditStatusModal && editingUser && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-6">
+            <div className="bg-[#1a1a1c] border border-white/10 rounded-2xl p-8 max-w-md w-full">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold text-white">
+                  Modifier le statut
+                </h3>
+                <button
+                  onClick={() => setShowEditStatusModal(false)}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-gray-400 text-sm mb-2">Utilisateur:</p>
+                  <p className="text-white font-semibold">{editingUser.email}</p>
+                </div>
+
+                <div>
+                  <Label className="text-gray-300 mb-2 block">Nouveau statut</Label>
+                  <select
+                    value={newStatus}
+                    onChange={(e) => setNewStatus(e.target.value)}
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  >
+                    <option value="trialing">Trialing (Essai)</option>
+                    <option value="active">Active (Actif)</option>
+                  </select>
+                </div>
+
+                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                  <p className="text-sm text-blue-300">
+                    ℹ️ Si vous choisissez "Trialing", la période d'essai sera de 7 jours à partir de maintenant.
+                  </p>
+                </div>
+
+                <div className="flex gap-3 mt-6">
+                  <Button
+                    onClick={updateUserStatus}
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    Mettre à jour
+                  </Button>
+                  <Button
+                    onClick={() => setShowEditStatusModal(false)}
+                    className="flex-1 bg-gray-600 hover:bg-gray-700 text-white"
+                  >
+                    Annuler
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
-
-
-      {/* Edit Status Modal */}
-      {showEditStatusModal && editingUser && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-6">
-          <div className="bg-[#1a1a1c] border border-white/10 rounded-2xl p-8 max-w-md w-full">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-white">
-                Modifier le statut
-              </h3>
-              <button
-                onClick={() => setShowEditStatusModal(false)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <p className="text-gray-400 text-sm mb-2">Utilisateur:</p>
-                <p className="text-white font-semibold">{editingUser.email}</p>
-              </div>
-
-              <div>
-                <Label className="text-gray-300 mb-2 block">Nouveau statut</Label>
-                <select
-                  value={newStatus}
-                  onChange={(e) => setNewStatus(e.target.value)}
-                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="trialing">Trialing (Essai)</option>
-                  <option value="active">Active (Actif)</option>
-                </select>
-              </div>
-
-              <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                <p className="text-sm text-blue-300">
-                  ℹ️ Si vous choisissez "Trialing", la période d'essai sera de 7 jours à partir de maintenant.
-                </p>
-              </div>
-
-              <div className="flex gap-3 mt-6">
-                <Button
-                  onClick={updateUserStatus}
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
-                  Mettre à jour
-                </Button>
-                <Button
-                  onClick={() => setShowEditStatusModal(false)}
-                  className="flex-1 bg-gray-600 hover:bg-gray-700 text-white"
-                >
-                  Annuler
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
 export default AdminPanel;
