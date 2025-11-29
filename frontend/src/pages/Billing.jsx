@@ -71,24 +71,11 @@ export default function Billing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0a0b] via-[#111113] to-[#0a0a0b]">
-      {/* Header */}
-      <header className="border-b border-white/5 bg-black/20 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/dashboard')}
-              className="text-gray-400 hover:text-white"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Dashboard
-            </Button>
-            <h1 className="text-2xl font-bold">Facturation</h1>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation />
 
-      <main className="max-w-5xl mx-auto px-6 py-12 space-y-8">
+      <main className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+        <h1 className="text-3xl font-bold text-white">Facturation</h1>
         {/* Trial Banner */}
         {showTrialBanner && (
           <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 rounded-2xl p-6">
