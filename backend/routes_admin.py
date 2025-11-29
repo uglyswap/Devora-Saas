@@ -280,8 +280,23 @@ async def get_user_invoices(
     user_id: str,
     current_admin: dict = Depends(get_current_admin_user)
 ):
-    """Get all invoices for a specific user"""
-    invoices = await db.invoices.find({'user_id': user_id}, {'_id': 0}).to_list(1000)
+    """Get all invoices for a specific user from Stripe"""
+    # Get user to retrieve stripe_customer_id
+    user = await db.users.find_one({'id': user_id}, {'_id': 0})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    
+    # If user has no Stripe customer ID, return empty
+    if not user.get('stripe_customer_id'):
+        return {
+            'invoices': [],
+            'count': 0,
+            'total_paid': 0
+        }
+    
+    # Get invoices from Stripe
+    invoices = await stripe_service.list_invoices(user['stripe_customer_id'], limit=100)
     
     # Calculate total paid
     total_paid = sum(inv.get('amount', 0) for inv in invoices if inv.get('status') == 'paid')
