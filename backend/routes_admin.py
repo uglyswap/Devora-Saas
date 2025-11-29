@@ -3,6 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from models import AdminStats, SystemConfig, SystemConfigUpdate
 from auth import get_current_admin_user
 from config_service import ConfigService
+from stripe_service import StripeService
 from datetime import datetime, timezone, timedelta
 import logging
 from config import settings
@@ -15,8 +16,9 @@ router = APIRouter(prefix='/admin', tags=['admin'])
 client = AsyncIOMotorClient(settings.MONGO_URL)
 db = client[settings.DB_NAME]
 
-# Initialize config service
+# Initialize services
 config_service = ConfigService(db)
+stripe_service = StripeService(db)
 
 @router.get('/stats', response_model=AdminStats)
 async def get_admin_stats(current_admin: dict = Depends(get_current_admin_user)):
